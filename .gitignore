@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Migrations directory
+Migrations
+
+# Project database file
+customtasks.db
