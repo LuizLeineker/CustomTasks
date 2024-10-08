@@ -400,5 +400,5 @@ FodyWeavers.xsd
 # Migrations directory
 Migrations
 
-# Project database file
-customtasks.db
+# Project database files
+customtasks.db*
