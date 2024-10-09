@@ -398,7 +398,7 @@ FodyWeavers.xsd
 *.sln.iml
 
 # Migrations directory
-Migrations
+Migrations/
 
 # Project database files
 customtasks.db*
