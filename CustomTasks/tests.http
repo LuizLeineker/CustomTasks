@@ -2,7 +2,8 @@
 POST http://localhost:5182/tasks/create
 Content-Type: application/json
 
+
 {
-    "name": "Acordar 8 horas",
-    "description": "Preciso me preparar bem para a reunião de amanhã."
+    "name": "acorda tarde",
+    "description": "Preciso me preparar bem para a reunião depois da manhaa."
 }
