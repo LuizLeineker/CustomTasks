@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace CustomTasks.Models;
 
 /*  Modelo da tabela de tarefas:
@@ -17,6 +19,9 @@ public class Task
     public string? Description { get; set; }
     public bool IsCompleted { get; set; }
     public DateTime CreatedAt { get; set; }
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
+}
 
     /* Colunas necessárias para relacionar a tabela de tarefas com a de rótulos/categorias
 
@@ -24,10 +29,3 @@ public class Task
     public int LabelId { get; set; } 
 
     */
-    
-    /* Colunas necessárias para relacionar a tabela de tarefas com a de usuários
-
-    public User User { get; set; }
-    public int OwnerId { get; set; }
-    */
-}
