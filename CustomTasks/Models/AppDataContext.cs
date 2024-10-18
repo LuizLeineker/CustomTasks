@@ -4,12 +4,13 @@ namespace CustomTasks.Models;
 
 public class AppDataContext : DbContext
 {
-    public DbSet<Task> Tasks { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Task> Tasks { get; set; }
+    public DbSet<Label> Labels { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=customtasks.db");
+        optionsBuilder.UseSqlite("Data Source=customLabels.db");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
