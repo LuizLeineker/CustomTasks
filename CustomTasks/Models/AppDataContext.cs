@@ -5,8 +5,7 @@ namespace CustomTasks.Models;
 public class AppDataContext : DbContext
 {
     public DbSet<Task> Tasks { get; set; }
-    public DbSet<Label> Labels { get; set; }
-
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite("Data Source=customtasks.db");
@@ -14,7 +13,12 @@ public class AppDataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Configurando o valor padrão da coluna de data de criação ("Created At") para cada nova tarefa adicionada, a data e hora atuais do sistema
+        // Definindo falso como valor padrão da coluna de status para cada nova tarefa
+        modelBuilder.Entity<Task>()
+        .Property(t => t.IsCompleted)
+        .HasDefaultValue(false);
+
+        // Definindo a data e hora atuais do sistema como valor padrão da coluna de data de criação para cada nova tarefa
         modelBuilder.Entity<Task>()
         .Property(t => t.CreatedAt)
         .HasDefaultValueSql("datetime('now', 'localtime')");
