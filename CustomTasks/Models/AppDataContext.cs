@@ -10,7 +10,7 @@ public class AppDataContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=customLabels.db");
+        optionsBuilder.UseSqlite("Data Source=customtasks.db");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

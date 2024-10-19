@@ -1,9 +1,41 @@
-### Teste funcionalidade de inserção
+### CRUD
+
+### Create User
+POST http://localhost:5182/user/create
+Content-Type: application/json
+
+
+{
+    "username": "Felipe Smith",
+    "email": "TacaramMassa@gmail.com",
+    "password": "memes"
+}
+
+
+### C - CREATE
 POST http://localhost:5182/tasks/create
 Content-Type: application/json
 
 
 {
     "name": "acorda tarde",
-    "description": "Preciso me preparar bem para a reunião depois da manhaa."
+    "description": "Preciso me preparar bem para a reunião depois da manhaa.",
+    "userid": "1"
 }
+
+### R - READ
+GET http://localhost:5182/tasks/list
+
+### U - UPDATE
+PUT http://localhost:5182/tasks/update/1
+Content-Type: application/json
+
+
+{
+    "name": "acorda",
+    "description": "Preciso me preparar bem para a reunião depois da manhaa.",
+    "userid": "1"
+}
+
+### D - DELETE 
+DELETE  http://localhost:5182/tasks/delete/1
