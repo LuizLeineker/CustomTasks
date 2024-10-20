@@ -20,46 +20,15 @@ app.MapPost("/user/create", ([FromBody] CustomTasks.Models.User user, [FromServi
     return Results.Created("", user);
 });
 
-// Remove Users
-app.MapDelete("/user/remove/{id}", async (int id,  [FromServices] AppDataContext context) => 
-{
-    var user = await context.Users.FindAsync(id);
-    if (user == null)
-    {
-        return Results.NotFound("404 - The ID does not match any User !");
-    }
-
-    user.Delete = true;
-    await context.SaveChangesAsync();
-
-    return Results.Ok("User removed successfully !");
-});
-
 // To Check User
 app.MapGet("/user/{id}", async (int id, [FromServices] AppDataContext context) =>
 {
     var user = await context.Users.FindAsync(id);
-    if (user == null || user.Delete)
-    {
-        return Results.NotFound("User not found or deleted !");
-    }
-    return Results.Ok(user);
-});
-
-
-// Restore Usurs
-app.MapPut("/user/restore/{id}", async (int id, [FromServices] AppDataContext context) =>
-{
-    var user = await context.Users.FirstOrDefaultAsync(u => u.UserId == id && u.Delete);
     if (user == null)
     {
-        return Results.NotFound("404 - The ID does not match any User !");
+        return Results.NotFound("User not found !");
     }
-
-    user.Delete = false;
-    await context.SaveChangesAsync();
-
-    return Results.Ok("User restored successfully !");
+    return Results.Ok(user);
 });
 
 // Update Users
@@ -69,16 +38,30 @@ app.MapPut("/user/update/{id}", async (int id, CustomTasks.Models.User userInput
 
     if (user == null)
     {
-        return Results.NotFound("404 - The ID does not match any User!");
+        return Results.NotFound("404 - The ID does not match any User !");
     }
 
     user.Username = userInput.Username;
     user.Email = userInput.Email;
     user.Password = userInput.Password;
-    user.Delete = userInput.Delete;
 
     await context.SaveChangesAsync();
-    return Results.Ok("User information has been updated!");
+    return Results.Ok("User information has been updated !");
+});
+
+// Delete Users
+app.MapDelete("/user/delete/{id}", async (int id,  [FromServices] AppDataContext context) => 
+{
+     var user = await context.Users.FindAsync(id);
+    if (user == null)
+    {
+        return Results.NotFound("404 - The ID does not match any User !");
+    }
+
+    context.Users.Remove(user);
+    await context.SaveChangesAsync();
+
+    return Results.Ok("User removed successfully !");
 });
 
 //
@@ -132,7 +115,7 @@ app.MapDelete("/tasks/delete/{id}", async (int id,  [FromServices] AppDataContex
     context.Tasks.Remove(produto);
     await context.SaveChangesAsync();
 
-    return Results.Ok("Task removed successfully !")
+    return Results.Ok("Task removed successfully !");
 });
 
 

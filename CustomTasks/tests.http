@@ -14,11 +14,8 @@ Content-Type: application/json
 ### To Check User
 GET Http://localhost:5182/user/1
 
-### Remove User
+### Delete User
 DELETE http://localhost:5182/user/delete/1
-
-### Restorest User
-PUT http://localhost:5182/user/restore/1
 
 ### Update User
 PUT http://localhost:5182/user/update/1
@@ -29,7 +26,6 @@ Content-Type: application/json
     "username": "Luiz Smith",
     "email": "CagueiNasCalça@gmail.com",
     "password": "rebolarPROScria",
-    "delete": 1
 }
 
 ### C - CREATE
