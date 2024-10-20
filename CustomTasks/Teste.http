@@ -7,9 +7,9 @@ Content-Type: application/json
 
 
 {
-    "username": "Felipe Smith",
-    "email": "TacaramMassa@gmail.com",
-    "password": "memes"
+    "username": "Brian Santos",
+    "email": "brian@gmail.com",
+    "password": "testeusuario"
 }
 
 ### To Check User
@@ -25,8 +25,8 @@ Content-Type: application/json
 
 {
     "username": "Luiz Smith",
-    "email": "CagueiNasCalça@gmail.com",
-    "password": "rebolarPROScria"
+    "email": "luiz@email.com",
+    "password": "testealteracao"
 }
 
 ### Delete User
@@ -38,13 +38,13 @@ Content-Type: application/json
 
 
 {
-    "name": "acorda tarde",
-    "description": "Preciso me preparar bem para a reunião depois da manhaa.",
+    "name": "Acordar 8 horas",
+    "description": "Preciso me preparar bem para a reunião das 10 horas.",
     "userid": 1
 }
 
-### R - READ
-GET {{baseUrl}}/tasks/list
+### Lista (caso houverem) todas aa tarefas relacionadas a um usuário
+GET {{baseUrl}}/tasks/list/1
 
 ### U - UPDATE
 PUT {{baseUrl}}/tasks/update/1
@@ -52,8 +52,8 @@ Content-Type: application/json
 
 
 {
-    "name": "acorda",
-    "description": "Preciso me preparar bem para a reunião depois da manhã.",
+    "name": "Acordar 7 horas",
+    "description": "Preciso me preparar bem para a reunião depois de amanhã.",
     "userid": 1
 }
 

@@ -93,14 +93,19 @@ app.MapPost("/tasks/create", ([FromBody] CustomTasks.Models.Task task, [FromServ
 });
 
 // List Task
-app.MapGet("/tasks/list", (AppDataContext context) =>
+app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
 {
-    var tasksList =  context.Tasks.ToList();
-    if (tasksList.Count == 0)
-    {
-        return Results.NotFound("404 - No tasks found.");
+    User? user = context.Users.Include(u => u.Tasks).FirstOrDefault(u => u.UserId == userId);
+    if (user == null) {
+        return Results.NotFound("404 - The ID does not match any User!");
     }
-    return Results.Ok(tasksList);
+
+    var userTasks = user.Tasks;
+    if (userTasks == null || userTasks.Count() == 0) {
+        return Results.NoContent();
+    }
+
+    return Results.Ok(userTasks.ToList());
 });
 
 // Update Task
@@ -173,8 +178,5 @@ app.MapGet("/labels/list/{userId}", async (int userId, AppDataContext context) =
 
     return Results.Ok(label);
 });
-
-
-
 
 app.Run();
