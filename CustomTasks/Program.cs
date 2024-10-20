@@ -167,15 +167,20 @@ app.MapDelete("/label/delete/{id}", async (int id,  [FromServices] AppDataContex
     return Results.Ok("Label removed successfully!");
 });
 
-app.MapGet("/labels/list/{userId}", async (int userId, AppDataContext context) =>
+app.MapGet("/label/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
 {
-    var label = await context.Labels.FirstOrDefaultAsync(l => l.UserId == userId);
-    if (label == null)
-    {
-        return Results.NotFound("No labels found for this user!");
+    User? user = context.Users.Include(u => u.Labels).FirstOrDefault(u => u.UserId == userId);
+    if (user == null) {
+        return Results.NotFound("404 - The ID does not match any User!");
     }
 
-    return Results.Ok(label);
+    var userLabels = user.Labels;
+    if (userLabels == null || userLabels.Count() == 0) {
+        return Results.NoContent();
+    }
+
+    return Results.Ok(userLabels.ToList());
 });
+
 
 app.Run();
