@@ -6,9 +6,9 @@ Content-Type: application/json
 
 
 {
-    "username": "Felipe Smith",
+    "username": "Brian Santos",
     "email": "TacaramMassa@gmail.com",
-    "password": "memes",
+    "password": "memes"
 }
 
 ### To Check User
@@ -25,7 +25,7 @@ Content-Type: application/json
 {
     "username": "Luiz Smith",
     "email": "CagueiNasCalça@gmail.com",
-    "password": "rebolarPROScria",
+    "password": "rebolarPROScria"
 }
 
 ### C - CREATE
