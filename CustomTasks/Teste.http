@@ -1,66 +1,67 @@
+@baseUrl = http://localhost:5182
 ### CRUD
 
 ### Create User
-POST http://localhost:5182/user/create
+POST {{baseUrl}}/user/create
 Content-Type: application/json
 
 
 {
-    "username": "Felipe Smith",
-    "email": "FelipeSmith@gmail.com",
-    "password": "presunto1",
+    "username": "Brian Santos",
+    "email": "brian@gmail.com",
+    "password": "testeusuario"
 }
 
 ### To Check User
-GET Http://localhost:5182/user/1
+GET {{baseUrl}}/user/1
 
-### List User
-GET http://localhost:5182/user/list
+### Lista (caso houverem) todos os usuários presentes no banco
+GET {{baseUrl}}/user/list
 
 ### Update User
-PUT http://localhost:5182/user/update/1
+PUT {{baseUrl}}/user/update/1
 Content-Type: application/json
 
 
 {
-    "username": "Luiz Smith Junior",
-    "email": "LuizSmithJunior@gmail.com",
-    "password": "presunto2",
+    "username": "Luiz Smith",
+    "email": "luiz@email.com",
+    "password": "testealteracao"
 }
 
 ### Delete User
-DELETE http://localhost:5182/user/delete/1
+DELETE {{baseUrl}}/user/delete/1
 
 ### C - CREATE
-POST http://localhost:5182/tasks/create
+POST {{baseUrl}}/tasks/create
 Content-Type: application/json
 
 
 {
-    "name": "acorda tarde",
-    "description": "Preciso me preparar bem para a reunião depois da manhaa.",
-    "userid": "1"
+    "name": "Acordar 8 horas",
+    "description": "Preciso me preparar bem para a reunião das 10 horas.",
+    "userid": 1
 }
 
-### R - READ
-GET http://localhost:5182/tasks/list
+### Lista (caso houverem) todas aa tarefas relacionadas a um usuário
+GET {{baseUrl}}/tasks/list/1
 
 ### U - UPDATE
-PUT http://localhost:5182/tasks/update/1
+PUT {{baseUrl}}/tasks/update/1
 Content-Type: application/json
 
 
 {
-    "name": "acorda",
-    "description": "Preciso me preparar bem para a reunião depois da manhã.",
-    "userid": "1"
+    "name": "Acordar 7 horas",
+    "description": "Preciso me preparar bem para a reunião depois de amanhã.",
+    "userid": 1
 }
 
 ### D - DELETE 
-DELETE  http://localhost:5182/tasks/delete/1
+DELETE  {{baseUrl}}/tasks/delete/1
 
 ### Create Label
-PUT http://localhost:5182/label/create
+PUT {{baseUrl}}/label/create
 Content-Type: application/json
 
 {
@@ -69,8 +70,7 @@ Content-Type: application/json
 }
 
 ### Delete Label
-DELETE http://localhost:5182/label/delete/1
+DELETE {{baseUrl}}/label/delete/1
 
 ### List Label
-GET http://localhost:5182/label/list/1
-
+GET {{baseUrl}}/label/list/1

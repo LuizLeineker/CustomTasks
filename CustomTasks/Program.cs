@@ -16,9 +16,9 @@ app.MapGet("/", () => "Hello World!");
 app.MapPost("/user/create", async ([FromBody] CustomTasks.Models.User user, [FromServices] AppDataContext context) => 
 {
     var existsEmail = await context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
-    if (existsEmail != null)
+    if (existsEmail!= null)
     {
-        return Results.Conflict("The email is already in use !");
+        return Results.Conflict("The email is already in use!");
     }
 
     context.Users.Add(user);
@@ -32,7 +32,7 @@ app.MapGet("/user/{id}", async (int id, [FromServices] AppDataContext context) =
     var user = await context.Users.FindAsync(id);
     if (user == null)
     {
-        return Results.NotFound("User not found !");
+        return Results.NotFound("User not found!");
     }
     return Results.Ok(user);
 });
@@ -40,8 +40,11 @@ app.MapGet("/user/{id}", async (int id, [FromServices] AppDataContext context) =
 // List User
 app.MapGet("/user/list", (AppDataContext context) =>
 {
-    var user =  context.Users.ToList();
-    return Results.Ok(user);
+    var usersList =  context.Users.ToList();
+    if (usersList.Count == 0) {
+        return Results.NotFound("404 - No users found.");
+    }
+    return Results.Ok(usersList);
 });
 
 
@@ -52,7 +55,7 @@ app.MapPut("/user/update/{id}", async (int id, CustomTasks.Models.User userInput
 
     if (user == null)
     {
-        return Results.NotFound("404 - The ID does not match any User !");
+        return Results.NotFound("404 - The ID does not match any User!");
     }
 
     user.Username = userInput.Username;
@@ -60,7 +63,7 @@ app.MapPut("/user/update/{id}", async (int id, CustomTasks.Models.User userInput
     user.Password = userInput.Password;
 
     await context.SaveChangesAsync();
-    return Results.Ok("User information has been updated !");
+    return Results.Ok("User information has been updated!");
 });
 
 // Delete Users
@@ -69,12 +72,12 @@ app.MapDelete("/user/delete/{id}", async (int id,  [FromServices] AppDataContext
      var user = await context.Users.FindAsync(id);
     if (user == null)
     {
-        return Results.NotFound("404 - The ID does not match any User !");
+        return Results.NotFound("404 - The ID does not match any User!");
     }
 
     context.Users.Remove(user);
     await context.SaveChangesAsync();
-    return Results.Ok("User removed successfully !");
+    return Results.Ok("User removed successfully!");
 });
 
 //
@@ -90,10 +93,19 @@ app.MapPost("/tasks/create", ([FromBody] CustomTasks.Models.Task task, [FromServ
 });
 
 // List Task
-app.MapGet("/tasks/list", (AppDataContext context) =>
+app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
 {
-    var tarefas =  context.Tasks.ToList();
-    return Results.Ok(tarefas);
+    User? user = context.Users.Include(u => u.Tasks).FirstOrDefault(u => u.UserId == userId);
+    if (user == null) {
+        return Results.NotFound("404 - The ID does not match any User!");
+    }
+
+    var userTasks = user.Tasks;
+    if (userTasks == null || userTasks.Count() == 0) {
+        return Results.NoContent();
+    }
+
+    return Results.Ok(userTasks.ToList());
 });
 
 // Update Task
@@ -102,7 +114,7 @@ app.MapPut("/tasks/update/{id}", async (int id, CustomTasks.Models.Task task, [F
     var tarefa = await context.Tasks.FindAsync(id);
 
     if (tarefa == null){
-        return Results.NotFound("404 - The ID does not match any Task !");
+        return Results.NotFound("404 - The ID does not match any Task!");
     }
 
     tarefa.Name = task.Name;
@@ -121,12 +133,12 @@ app.MapDelete("/tasks/delete/{id}", async (int id,  [FromServices] AppDataContex
      var produto = await context.Tasks.FindAsync(id);
     if (produto == null)
     {
-        return Results.NotFound("404 - The ID does not match any Task !");
+        return Results.NotFound("404 - The ID does not match any Task!");
     }
 
     context.Tasks.Remove(produto);
     await context.SaveChangesAsync();
-    return Results.Ok("Task removed successfully !");
+    return Results.Ok("Task removed successfully!");
 });
 
 //
@@ -147,12 +159,12 @@ app.MapDelete("/label/delete/{id}", async (int id,  [FromServices] AppDataContex
      var label = await context.Labels.FindAsync(id);
     if (label == null)
     {
-        return Results.NotFound("404 - ID does not match any Label !");
+        return Results.NotFound("404 - ID does not match any Label!");
     }
 
     context.Labels.Remove(label);
     await context.SaveChangesAsync();
-    return Results.Ok("Label removed successfully !");
+    return Results.Ok("Label removed successfully!");
 });
 
 app.MapGet("/labels/list/{userId}", async (int userId, AppDataContext context) =>
@@ -160,13 +172,10 @@ app.MapGet("/labels/list/{userId}", async (int userId, AppDataContext context) =
     var label = await context.Labels.FirstOrDefaultAsync(l => l.UserId == userId);
     if (label == null)
     {
-        return Results.NotFound("No labels found for this user !");
+        return Results.NotFound("No labels found for this user!");
     }
 
     return Results.Ok(label);
 });
-
-
-
 
 app.Run();
