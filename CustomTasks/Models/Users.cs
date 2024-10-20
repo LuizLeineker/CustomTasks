@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CustomTasks.Models;
 
-[Index("Username", IsUnique = true)]
+[Index("Username", IsUnique = true), Index("Email", IsUnique = true)]
 public class User
 {
     public int UserId { get; set; }
@@ -18,4 +18,3 @@ public class User
     // Navegação de rótulos/etiquetas relacionadas a um usuário em específico
     public ICollection<Label>? Labels { get; set; }
 }
-
