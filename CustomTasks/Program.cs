@@ -106,7 +106,7 @@ app.MapPut("/tasks/update/{id}", async (int id, CustomTasks.Models.Task task, [F
     var tarefa = await context.Tasks.FindAsync(id);
 
     if (tarefa == null){
-        return Results.NotFound("404 - O ID não corresponde a nenhuma Tarefa!");
+        return Results.NotFound("404 - The ID does not match any Task !");
     }
 
     tarefa.Name = task.Name;
@@ -116,8 +116,7 @@ app.MapPut("/tasks/update/{id}", async (int id, CustomTasks.Models.Task task, [F
     tarefa.Labels = task.Labels;
     
     await context.SaveChangesAsync();
-    return Results.Ok("informações da Tarefa foram atualizadas! ");
-
+    return Results.Ok("Task information has been updated!");
 });
 
 // Remover Tarefas
@@ -127,13 +126,13 @@ app.MapDelete("/tasks/delete/{id}", async (int id,  [FromServices] AppDataContex
      var produto = await context.Tasks.FindAsync(id);
     if (produto == null)
     {
-        return Results.NotFound("404 - O ID não corresponde a nenhuma Tarefa!");
+        return Results.NotFound("404 - The ID does not match any Task !");
     }
 
     context.Tasks.Remove(produto);
     await context.SaveChangesAsync();
 
-    return Results.Ok("Tarefa removida com sucesso!");
+    return Results.Ok("Task removed successfully !")
 });
 
 
