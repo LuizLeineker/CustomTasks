@@ -7,15 +7,15 @@ Content-Type: application/json
 
 {
     "username": "Felipe Smith",
-    "email": "TacaramMassa@gmail.com",
-    "password": "memes",
+    "email": "FelipeSmith@gmail.com",
+    "password": "mussarela1"
 }
 
 ### To Check User
 GET Http://localhost:5182/user/1
 
-### Delete User
-DELETE http://localhost:5182/user/delete/1
+### List User
+GET http://localhost:5182/user/list
 
 ### Update User
 PUT http://localhost:5182/user/update/1
@@ -23,10 +23,13 @@ Content-Type: application/json
 
 
 {
-    "username": "Luiz Smith",
-    "email": "CagueiNasCalça@gmail.com",
-    "password": "rebolarPROScria",
+    "username": "Luiz Smith Junior",
+    "email": "LuizSmithJunior@gmail.com",
+    "password": "Presunto1"
 }
+
+### Delete User
+DELETE http://localhost:5182/user/delete/1
 
 ### C - CREATE
 POST http://localhost:5182/tasks/create
@@ -49,9 +52,25 @@ Content-Type: application/json
 
 {
     "name": "acorda",
-    "description": "Preciso me preparar bem para a reunião depois da manhaa.",
+    "description": "Preciso me preparar bem para a reunião depois da manhã.",
     "userid": "1"
 }
 
 ### D - DELETE 
 DELETE  http://localhost:5182/tasks/delete/1
+
+### Create Label
+PUT http://localhost:5182/label/create
+Content-Type: application/json
+
+{
+    "LabelName": "Estudar",
+    "UserId": 1
+}
+
+### Delete Label
+DELETE http://localhost:5182/label/delete/1
+
+### List Label
+GET http://localhost:5182/label/list/1
+
