@@ -1,5 +1,6 @@
 using CustomTasks.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
@@ -19,9 +20,66 @@ app.MapPost("/user/create", ([FromBody] CustomTasks.Models.User user, [FromServi
     return Results.Created("", user);
 });
 
+// Remove Users
+app.MapDelete("/user/remove/{id}", async (int id,  [FromServices] AppDataContext context) => 
+{
+    var user = await context.Users.FindAsync(id);
+    if (user == null)
+    {
+        return Results.NotFound("404 - The ID does not match any User !");
+    }
+
+    user.Delete = true;
+    await context.SaveChangesAsync();
+
+    return Results.Ok("User removed successfully !");
+});
+
+// To Check User
+app.MapGet("/user/{id}", async (int id, [FromServices] AppDataContext context) =>
+{
+    var user = await context.Users.FindAsync(id);
+    if (user == null || user.Delete)
+    {
+        return Results.NotFound("User not found or deleted !");
+    }
+    return Results.Ok(user);
+});
 
 
+// Restore Usurs
+app.MapPut("/user/restore/{id}", async (int id, [FromServices] AppDataContext context) =>
+{
+    var user = await context.Users.FirstOrDefaultAsync(u => u.UserId == id && u.Delete);
+    if (user == null)
+    {
+        return Results.NotFound("404 - The ID does not match any User !");
+    }
 
+    user.Delete = false;
+    await context.SaveChangesAsync();
+
+    return Results.Ok("User restored successfully !");
+});
+
+// Update Users
+app.MapPut("/user/update/{id}", async (int id, CustomTasks.Models.User userInput, [FromServices] AppDataContext context) =>
+{
+    var user = await context.Users.FindAsync(id);
+
+    if (user == null)
+    {
+        return Results.NotFound("404 - The ID does not match any User!");
+    }
+
+    user.Username = userInput.Username;
+    user.Email = userInput.Email;
+    user.Password = userInput.Password;
+    user.Delete = userInput.Delete;
+
+    await context.SaveChangesAsync();
+    return Results.Ok("User information has been updated!");
+});
 
 //
 // TASKS
@@ -47,7 +105,7 @@ app.MapPut("/tasks/update/{id}", async (int id, CustomTasks.Models.Task task, [F
 {
     var tarefa = await context.Tasks.FindAsync(id);
 
-    if(tarefa == null){
+    if (tarefa == null){
         return Results.NotFound("404 - O ID não corresponde a nenhuma Tarefa!");
     }
 

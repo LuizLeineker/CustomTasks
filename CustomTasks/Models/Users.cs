@@ -17,4 +17,7 @@ public class User
     public ICollection<Task>? Tasks { get; set; }
     // Navegação de rótulos/etiquetas relacionadas a um usuário em específico
     public ICollection<Label>? Labels { get; set; }
+    // Não o removê fisicamente do banco de dados, permitindo que se recuperado o usuário.
+    public bool Delete { get; set; } = false;
 }
+
