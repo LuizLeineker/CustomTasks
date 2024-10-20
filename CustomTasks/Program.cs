@@ -157,8 +157,7 @@ app.MapDelete("/label/delete/{id}", async (int id,  [FromServices] AppDataContex
 
 app.MapGet("/labels/list/{userId}", async (int userId, AppDataContext context) =>
 {
-    var label = await context.Labels.Where(l => l.UserId == userId)
-    .ToListAsync();
+    var label = await context.Labels.FirstOrDefaultAsync(l => l.UserId == userId);
     if (label == null)
     {
         return Results.NotFound("No labels found for this user !");

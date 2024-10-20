@@ -7,8 +7,8 @@ Content-Type: application/json
 
 {
     "username": "Felipe Smith",
-    "email": "TacaramMassa@gmail.com",
-    "password": "memes",
+    "email": "FelipeSmith@gmail.com",
+    "password": "presunto1",
 }
 
 ### To Check User
@@ -23,9 +23,9 @@ Content-Type: application/json
 
 
 {
-    "username": "Luiz Smith",
-    "email": "CagueiNasCalça@gmail.com",
-    "password": "rebolarPROScria",
+    "username": "Luiz Smith Junior",
+    "email": "LuizSmithJunior@gmail.com",
+    "password": "presunto2",
 }
 
 ### Delete User
