@@ -4,6 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
+
+// Habilitando CORS e política que permite requisições com origem (esquema, domínio e porta) do website feito em React
+builder.Services.AddCors(options => {
+    options.AddPolicy("Permitir site React", 
+        configs => configs.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
@@ -182,5 +191,6 @@ app.MapGet("/label/list/{userId}", ([FromRoute] int userId, [FromServices] AppDa
     return Results.Ok(userLabels.ToList());
 });
 
+app.UseCors("Permitir site React");
 
 app.Run();

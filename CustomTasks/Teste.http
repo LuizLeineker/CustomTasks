@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:5182
+@baseUrl = http://localhost:5182/api
 ### CRUD
 
 ### Create User
