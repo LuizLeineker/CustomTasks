@@ -1,10 +1,9 @@
-@baseUrl = http://localhost:5182/api
+@baseUrl = http://localhost:5182
 ### CRUD
 
-### Create User
+### Cria usuário
 POST {{baseUrl}}/user/create
 Content-Type: application/json
-
 
 {
     "username": "Brian Santos",
@@ -12,16 +11,15 @@ Content-Type: application/json
     "password": "testeusuario"
 }
 
-### To Check User
+### Retorna as informações de um usuário específico
 GET {{baseUrl}}/user/1
 
 ### Lista (caso houverem) todos os usuários presentes no banco
 GET {{baseUrl}}/user/list
 
-### Update User
+### Atualiza a(s) informação/informações de um usuário específico
 PUT {{baseUrl}}/user/update/1
 Content-Type: application/json
-
 
 {
     "username": "Luiz Smith",
@@ -29,13 +27,12 @@ Content-Type: application/json
     "password": "testealteracao"
 }
 
-### Delete User
+### Remove um usuário
 DELETE {{baseUrl}}/user/delete/1
 
-### C - CREATE
+### Cria uma tarefa
 POST {{baseUrl}}/tasks/create
 Content-Type: application/json
-
 
 {
     "name": "Acordar 8 horas",
@@ -43,13 +40,12 @@ Content-Type: application/json
     "userid": 1
 }
 
-### Lista (caso houverem) todas aa tarefas relacionadas a um usuário
+### Lista (caso houverem) todas as tarefas relacionadas a um usuário específico
 GET {{baseUrl}}/tasks/list/1
 
-### U - UPDATE
+### Atualiza as informações de uma tarefa em particular
 PUT {{baseUrl}}/tasks/update/1
 Content-Type: application/json
-
 
 {
     "name": "Acordar 7 horas",
@@ -57,10 +53,10 @@ Content-Type: application/json
     "userid": 1
 }
 
-### D - DELETE 
+### Remove uma tarefa em particular
 DELETE  {{baseUrl}}/tasks/delete/1
 
-### Create Label
+### Cria uma/um etiqueta/rótulo
 PUT {{baseUrl}}/label/create
 Content-Type: application/json
 
@@ -69,8 +65,8 @@ Content-Type: application/json
     "UserId": 1
 }
 
-### Delete Label
+### Remove um rótulo em específico
 DELETE {{baseUrl}}/label/delete/1
 
-### List Label
+### Retorna todos os rótulos relacionados a um usuário em específico
 GET {{baseUrl}}/label/list/1

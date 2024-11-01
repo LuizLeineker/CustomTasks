@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
 
-// Habilitando CORS e política que permite requisições com origem (esquema, domínio e porta) do website feito em React
+// Habilitando CORS e política que permite requisições com origem (composta por esquema, domínio e porta) do website feito em React
 builder.Services.AddCors(options => {
-    options.AddPolicy("Permitir site React", 
+    options.AddPolicy("AllowReactWebsite", 
         configs => configs.WithOrigins("http://localhost:3000")
                     .AllowAnyHeader()
                     .AllowAnyMethod());
@@ -15,13 +15,13 @@ builder.Services.AddCors(options => {
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Welcome to the CustomTasks API!");
 
 //
-// USER
+// Usuários (Users)
 //
 
-// Insert Users
+// Cria usuário (caso o nome e email que serão usados já não existam)
 app.MapPost("/user/create", async ([FromBody] CustomTasks.Models.User user, [FromServices] AppDataContext context) => 
 {
     var existsEmail = await context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
@@ -35,8 +35,8 @@ app.MapPost("/user/create", async ([FromBody] CustomTasks.Models.User user, [Fro
     return Results.Created("", user);
 });
 
-// To Check User
-app.MapGet("/user/{id}", async (int id, [FromServices] AppDataContext context) =>
+// Retorna os dados do usuário cujo id bata com o parâmetro passado através da URL (caso o id seja válido) 
+app.MapGet("/user/{id}", async ([FromRoute] int id, [FromServices] AppDataContext context) =>
 {
     var user = await context.Users.FindAsync(id);
     if (user == null)
@@ -46,8 +46,8 @@ app.MapGet("/user/{id}", async (int id, [FromServices] AppDataContext context) =
     return Results.Ok(user);
 });
 
-// List User
-app.MapGet("/user/list", (AppDataContext context) =>
+// Lista todos os usuários cadastrados (caso exista algum)
+app.MapGet("/user/list", ([FromServices] AppDataContext context) =>
 {
     var usersList =  context.Users.ToList();
     if (usersList.Count == 0) {
@@ -56,32 +56,30 @@ app.MapGet("/user/list", (AppDataContext context) =>
     return Results.Ok(usersList);
 });
 
-
-// Update Users
-app.MapPut("/user/update/{id}", async (int id, CustomTasks.Models.User userInput, [FromServices] AppDataContext context) =>
+// Atualiza as informações do usuário cujo id bata com o do parâmetro passado através da URL (caso o id seja válido)
+app.MapPut("/user/update/{id}", async ([FromRoute] int id, [FromBody] User userChanges, [FromServices] AppDataContext context) =>
 {
     var user = await context.Users.FindAsync(id);
-
     if (user == null)
     {
-        return Results.NotFound("404 - The ID does not match any User!");
+        return Results.NotFound("404 - The ID does not match any user!");
     }
 
-    user.Username = userInput.Username;
-    user.Email = userInput.Email;
-    user.Password = userInput.Password;
+    user.Username = userChanges.Username;
+    user.Email = userChanges.Email;
+    user.Password = userChanges.Password;
 
     await context.SaveChangesAsync();
     return Results.Ok("User information has been updated!");
 });
 
-// Delete Users
-app.MapDelete("/user/delete/{id}", async (int id,  [FromServices] AppDataContext context) => 
+// Remove o usuário cujo id bata com o do parâmetro passado através da URL (caso o id seja válido)
+app.MapDelete("/user/delete/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) => 
 {
-     var user = await context.Users.FindAsync(id);
+    var user = await context.Users.FindAsync(id);
     if (user == null)
     {
-        return Results.NotFound("404 - The ID does not match any User!");
+        return Results.NotFound("404 - The ID does not match any user!");
     }
 
     context.Users.Remove(user);
@@ -90,10 +88,10 @@ app.MapDelete("/user/delete/{id}", async (int id,  [FromServices] AppDataContext
 });
 
 //
-// TASKS
+// Tarefas (Tasks)
 //
 
-// Insert Task
+// Cria uma tarefa com base no objeto do tipo task passado via parâmetro através do corpo da requisição
 app.MapPost("/tasks/create", ([FromBody] CustomTasks.Models.Task task, [FromServices] AppDataContext context) => 
 {
     context.Tasks.Add(task);
@@ -101,12 +99,12 @@ app.MapPost("/tasks/create", ([FromBody] CustomTasks.Models.Task task, [FromServ
     return Results.Created("", task);
 });
 
-// List Task
+// Lista todas as tarefas pertencentes ao usuário cujo id bata com o do parâmetro passado através da URL (caso o id corresponda a algum usuário efetivamente)
 app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
 {
     User? user = context.Users.Include(u => u.Tasks).FirstOrDefault(u => u.UserId == userId);
     if (user == null) {
-        return Results.NotFound("404 - The ID does not match any User!");
+        return Results.NotFound("404 - The ID does not match any user!");
     }
 
     var userTasks = user.Tasks;
@@ -117,13 +115,12 @@ app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDa
     return Results.Ok(userTasks.ToList());
 });
 
-// Update Task
-app.MapPut("/tasks/update/{id}", async (int id, CustomTasks.Models.Task task, [FromServices] AppDataContext context) =>
+// Atualiza as informações da tarefa com o valor do id passado via parâmetro através da URL
+app.MapPut("/tasks/update/{id}", async ([FromRoute] int id, CustomTasks.Models.Task task, [FromServices] AppDataContext context) =>
 {
     var tarefa = await context.Tasks.FindAsync(id);
-
     if (tarefa == null){
-        return Results.NotFound("404 - The ID does not match any Task!");
+        return Results.NotFound("404 - The ID does not match any task!");
     }
 
     tarefa.Name = task.Name;
@@ -136,13 +133,13 @@ app.MapPut("/tasks/update/{id}", async (int id, CustomTasks.Models.Task task, [F
     return Results.Ok("Task information has been updated!");
 });
 
-// Remove Task
-app.MapDelete("/tasks/delete/{id}", async (int id,  [FromServices] AppDataContext context) => 
+// Remove a tarefa com id correspondnete ao passado por parâmetro através da URL (caso o id de fato corresponda a alguma tarefa)
+app.MapDelete("/tasks/delete/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) => 
 {
-     var produto = await context.Tasks.FindAsync(id);
+    var produto = await context.Tasks.FindAsync(id);
     if (produto == null)
     {
-        return Results.NotFound("404 - The ID does not match any Task!");
+        return Results.NotFound("404 - The ID does not match any task!");
     }
 
     context.Tasks.Remove(produto);
@@ -151,36 +148,23 @@ app.MapDelete("/tasks/delete/{id}", async (int id,  [FromServices] AppDataContex
 });
 
 //
-//  LABEL
+//  Etiquetas/Rótulos (Labels)
 //
 
-// Insert Label
-app.MapPut("/label/create", async ([FromBody] CustomTasks.Models.Label label, [FromServices] AppDataContext context) =>
+// Cria uma etiqueta/rótulo tomando como referência o objeto de rótulo passado por argumento através do corpo da requisição
+app.MapPut("/label/create", async ([FromBody] Label label, [FromServices] AppDataContext context) =>
 {
     context.Labels.Add(label);
     await context.SaveChangesAsync();
     return Results.Created("", label);
 });
 
-// Delete Label
-app.MapDelete("/label/delete/{id}", async (int id,  [FromServices] AppDataContext context) => 
-{
-     var label = await context.Labels.FindAsync(id);
-    if (label == null)
-    {
-        return Results.NotFound("404 - ID does not match any Label!");
-    }
-
-    context.Labels.Remove(label);
-    await context.SaveChangesAsync();
-    return Results.Ok("Label removed successfully!");
-});
-
+// Retorna todos os rótulos associados ao usuário com o id passado por argumento através da URL (caso ele possua algum e o id seja válido)
 app.MapGet("/label/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
 {
     User? user = context.Users.Include(u => u.Labels).FirstOrDefault(u => u.UserId == userId);
     if (user == null) {
-        return Results.NotFound("404 - The ID does not match any User!");
+        return Results.NotFound("404 - The ID does not match any user!");
     }
 
     var userLabels = user.Labels;
@@ -191,6 +175,21 @@ app.MapGet("/label/list/{userId}", ([FromRoute] int userId, [FromServices] AppDa
     return Results.Ok(userLabels.ToList());
 });
 
-app.UseCors("Permitir site React");
+// Remove o rótulo cujo id bata com o do parâmetro passado através da URL (caso o id de fato se refira a alguma etiqueta/rótulo existente no banco)
+app.MapDelete("/label/delete/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) => 
+{
+    var label = await context.Labels.FindAsync(id);
+    if (label == null)
+    {
+        return Results.NotFound("404 - ID does not match any label!");
+    }
+
+    context.Labels.Remove(label);
+    await context.SaveChangesAsync();
+    return Results.Ok("Label removed successfully!");
+});
+
+// Aplicando a política de CORS que permite requisições do wbesite em REACT (AllowReactWebsite)
+app.UseCors("AllowReactWebsite");
 
 app.Run();
