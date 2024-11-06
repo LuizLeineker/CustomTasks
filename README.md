@@ -3,11 +3,12 @@
 ## Menu de navegação 📍
 1. [Introdução](#apresentando-o-customtasks-%EF%B8%8F)
    - [Resumo](#de-forma-sucinta)
-   - [Funcionamento]()
+   - [Funcionamento](#como-funciona)
+   - [Estrutura de diretórios](#estrutura-de-diretórios)
 3. [Como começar](#preparando-o-terreno-)
    - [Clonando o repositório](#clonando-o-repositório-%EF%B8%8F)
    - [Baixando dependências](#baixando-dependências-%EF%B8%8F)
-     - [Dependências .NET]()
+     - [Dependências .NET](.)
      - [Dependências React](.)
    - [Configurando o DB](#configurando-o-banco-de-dados-)
 4. Como usar (a ser feita)
@@ -16,17 +17,45 @@
 
 ### De forma sucinta...
 <p align="justify">
-O <code>CustomTasks</code> é um sistema 100% "<em>web</em>" com o objetivo de providenciar ao usuário uma interface gráfica agradável e limpa com a qual ele possa interagir e gerenciar suas tarefas de forma simples e descomplicada. Para ser mais específico, quando falamos em gerência nos referimos as seguintes capacidades: <strong>criação</strong>, <strong>visualização</strong>, <strong>modificação</strong> e <strong>exclusão</strong>. O <code>CustomTasks</code> ainda vai mais longe e busca ofertar ao usuário um controle mais granular sobre suas tarefas, permitindo que as atribua etiquetas, visando torná-las mais facilmente identificáveis, mais semânticas e permitir a realização de filtragens (caso necessárias). Finalizando a seção, as etiquetas, da mesma forma que as tarefas, também podem ser plenamente geridas pelo usuário da forma que melhor lhe convir.
+O <code>CustomTasks</code> é um sistema 100% "<em>web</em>" com o objetivo de providenciar ao usuário uma interface visual agradável e limpa com a qual possa interagir e gerenciar suas tarefas de forma simples e descomplicada. Para ser mais específico, quando falamos em gerência nos referimos as seguintes capacidades: <strong>criação</strong>, <strong>visualização</strong>, <strong>modificação</strong> e <strong>exclusão</strong>. O <code>CustomTasks</code> ainda vai mais longe e busca ofertar um controle mais granular sobre as tarefas, permitindo que atribua-as etiquetas especialmente pensadas para torná-las mais fáceis de organizar e mais semânticas, habilitando também a realização de filtragens inteligentes que atendam suas necessidades. Finalizando a seção, as etiquetas, da mesma forma que as tarefas, são plenamente geríveis pelo usuário, em outras palavras, ele tem <strong>total</strong> controle sobre elas, podendo usá-las de modo que melhor lhe convenha.
 </p>
 
 ### Como funciona?
 <p align="justify">
-Com a pergunta "O que é?" respondida podemos agora nos concentrar no funcionamento da aplicação, sendo breve, podemos quebrá-la essencialmente em dois principais componentes, são eles: um sítio virtual feito com base nos recursos disponíveis na biblioteca <a href="https://react.dev/">React</a>, desenvolvida pelo conglomerado estadunidense denominado <strong><em>Meta</em></strong> em conjunto com o superconjunto da linguagem de programação JavaScript (ou EcmaScript), a <a href="https://www.typescriptlang.org/">Typescript</a> e, como segundo componente, uma API programada usando da linguagem de programação <a href="https://learn.microsoft.com/pt-br/dotnet/csharp/">C#</a> (ou "<em>Csharp</em>"), desenvolvida pela empresa, também estadunidense, <strong><em>Microsoft</em></strong>. Esses dois componentes citados anteriormente trabalham de maneira sincronizada para permitir que a aplicação desempenhe as funcionalidades enumeradas e declaradas na seção acima e mais duas outras imprescindíveis para o bom funcionamento e uso: <strong> sistema de cadastro</strong> e "<strong><em>login</em></strong>"
+Com a pergunta "O que é?" respondida podemos agora nos concentrar no funcionamento da aplicação, sendo breve, podemos quebrá-la essencialmente em dois principais componentes, são eles: um sítio virtual feito com base nos recursos disponíveis na biblioteca <a href="https://react.dev/">React</a>, desenvolvida pelo conglomerado estadunidense denominado <strong><em>Meta</em></strong> juntamente com o superconjunto da linguagem de programação JavaScript (ou EcmaScript), a <a href="https://www.typescriptlang.org/">Typescript</a>, e como segundo componente, uma "<em>API</em>" ("<em>Application programming interface</em>") programada usando da linguagem de programação C# (ou "<em>Csharp</em>"), projetada pela empresa, também estadunidense, <strong><em>Microsoft</em></strong>. Esses dois componentes citados anteriormente trabalham de maneira sincronizada para permitir que o sistema desempenhe as funcionalidades enumeradas e declaradas na seção acima e mais duas outras imprescindíveis para o seu bom funcionamento e uso: o <strong> sistema de cadastro</strong> e o de "<strong><em>login</em></strong>" (entrada), ambas exercem suas atividades sobre o usuário, composto de  três elementos: um <strong>nome</strong>, pelo qual será referenciado e servirá como um identificador único, um "<strong><em>email</em></strong>" e uma <strong>senha</strong>.
 </p>
+
+### Estrutura de diretórios
+<p align="justify">
+Finalizando nossa seção de introdução, é importante ressaltar bem como todo o projeto está organizado, haja visto que essa disposição dos diretórios e arquivos será de extrema importância e necessária em seções subsequentes, elas partirão do pressuposto que a estrutura que você possui localmente, isto é, em sua máquina, está de acordo com a seguinte:
+</p>
+
+```
+CustomTasks/ 
+   ├── CustomTasks/ 
+      ├── Models/ 
+         └── AppDataContext.cs
+         └── Label.cs
+         └── Task.cs
+         └── Users.cs
+      └── CustomTasks.csproj
+      └── customtasks.db
+      └── Program.cs
+      └── Teste.http
+   ├── website/ 
+      ├── public/ 
+         └── index.html
+      ├── src/
+         └── App.tsx
+         └── index.tsx
+      └── package-lock.json
+      └── package.json
+   └── README.md
+```
 
 ## Preparando o terreno 🌱
 <p align="justify">
-A aplicação `CustomTasks` faz extensivo uso dos recursos disponíveis no framework <a href="https://learn.microsoft.com/pt-br/aspnet/entity-framework">EntityCore</a>, disponível na plataforma <a href="https://dotnet.microsoft.com/pt-br">.NET</a> (ou "<em>Dotnet</em>" se preferir), sendo mais específico, falo das ferramentas nele presentes que possibilitam a integração com a biblioteca chamada <a href="https://www.sqlite.org/">SQLite</a>, portanto, para que tudo funcione corretamente, vai ser necessário tê-la instalada na máquina onde pretender executar o sistema, não só o "<em>framework</em>", mas também terá de fazer algumas configurações relacionadas ao banco de dados em si, ponto esse que será abordado mais precisamente em um tópico específico dessa seção
+A aplicação <code>CustomTasks</code> faz extensivo uso dos recursos disponíveis no framework <a href="https://learn.microsoft.com/pt-br/aspnet/entity-framework">EntityCore</a>, disponível na já mencionada plataforma <a href="https://dotnet.microsoft.com/pt-br">.NET</a> (ou "<em>Dotnet</em>" se preferir), sendo mais específico, falo das ferramentas nele presentes que possibilitam a integração com a biblioteca chamada <a href="https://www.sqlite.org/">SQLite</a>, portanto, para que tudo funcione corretamente, vai ser necessário tê-la instalada na máquina onde pretender executar o sistema, não só o "<em>framework</em>", mas também terá de fazer algumas configurações relacionadas ao banco de dados em si, ponto esse que será abordado mais precisamente em um tópico específico dessa seção.
 </p>
 
 ### Clonando o repositório ⛓️
@@ -40,7 +69,7 @@ git clone https://github.com/LuizLeineker/CustomTasks.git
 
 ### Baixando dependências ↩️
 <p align="justify">
-Caso não tenha ocorrido nenhum erro no passo anterior, podemos agora partir para a instalação das dependências do nosso projeto já mencionadas. Primeiro, no mesmo diretório/pasta onde houve a clonagem deste repositório, mova-se para a pasta <code>CustomTasks</code> gerada pelo comando anterior, nessa mesma pasta, mova-se para o diretório interna de mesmo nome e execute o seguinte comando:
+Caso não tenha ocorrido nenhum erro no passo anterior, podemos agora partir para a instalação das dependências já mencionadas. Primeiro, no mesmo diretório/pasta onde houve a clonagem deste repositório, mova-se para a pasta <code>CustomTasks</code> gerada pelo comando anterior, nessa mesma pasta, mova-se para o diretório interno de mesmo nome e execute o seguinte comando:
 </p>
 
 ```
