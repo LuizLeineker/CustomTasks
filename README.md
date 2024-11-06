@@ -22,7 +22,7 @@ O <code>CustomTasks</code> é um sistema 100% "<em>web</em>" com o objetivo de p
 
 ### Como funciona?
 <p align="justify">
-Com a pergunta "O que é?" respondida podemos agora nos concentrar no funcionamento da aplicação, sendo breve, podemos quebrá-la essencialmente em dois principais componentes, são eles: um sítio virtual feito com base nos recursos disponíveis na biblioteca <a href="https://react.dev/">React</a>, desenvolvida pelo conglomerado estadunidense denominado <strong><em>Meta</em></strong> juntamente com o superconjunto da linguagem de programação JavaScript (ou EcmaScript), a <a href="https://www.typescriptlang.org/">Typescript</a>, e como segundo componente, uma "<em>API</em>" ("<em>Application programming interface</em>") programada usando da linguagem de programação C# (ou "<em>Csharp</em>"), projetada pela empresa, também estadunidense, <strong><em>Microsoft</em></strong>. Esses dois componentes citados anteriormente trabalham de maneira sincronizada para permitir que o sistema desempenhe as funcionalidades enumeradas e declaradas na seção acima e mais duas outras imprescindíveis para o seu bom funcionamento e uso: o <strong> sistema de cadastro</strong> e o de "<strong><em>login</em></strong>" (entrada), ambas exercem suas atividades sobre o usuário, composto de  três elementos: um <strong>nome</strong>, pelo qual será referenciado e servirá como um identificador único, um "<strong><em>email</em></strong>" e uma <strong>senha</strong>.
+Com a pergunta "O que é?" respondida podemos agora nos concentrar no funcionamento da aplicação, sendo breve, podemos quebrá-la essencialmente em dois principais componentes, são eles: um sítio virtual feito com base nos recursos disponíveis na biblioteca <a href="https://react.dev/"><em>React</em></a>, desenvolvida pelo conglomerado estadunidense denominado <strong><em>Meta</em></strong> juntamente com o superconjunto da linguagem de programação JavaScript (ou EcmaScript), a <a href="https://www.typescriptlang.org/"><em>Typescript</em></a>, e como segundo componente, uma "<em>API</em>" ("<em>Application programming interface</em>") programada usando da linguagem de programação C# (ou "<em>Csharp</em>"), projetada pela empresa, também estadunidense, <strong><em>Microsoft</em></strong>. Esses dois componentes citados anteriormente trabalham de maneira sincronizada para permitir que o sistema desempenhe as funcionalidades enumeradas e declaradas na seção acima e mais duas outras imprescindíveis para o seu bom funcionamento e uso: o <strong> sistema de cadastro</strong> e o de "<strong><em>login</em></strong>" (entrada), ambas exercem suas atividades sobre o usuário, composto de  três elementos: um <strong>nome</strong>, pelo qual será referenciado e servirá como um identificador único, um "<strong><em>email</em></strong>" e uma <strong>senha</strong>.
 </p>
 
 ### Estrutura de diretórios
@@ -30,32 +30,36 @@ Com a pergunta "O que é?" respondida podemos agora nos concentrar no funcioname
 Finalizando nossa seção de introdução, é importante ressaltar bem como todo o projeto está organizado, haja visto que essa disposição dos diretórios e arquivos será de extrema importância e necessária em seções subsequentes, elas partirão do pressuposto que a estrutura que você possui localmente, isto é, em sua máquina, está de acordo com a seguinte:
 </p>
 
-```
-CustomTasks/ 
-   ├── CustomTasks/ 
-      ├── Models/ 
-         └── AppDataContext.cs
-         └── Label.cs
-         └── Task.cs
-         └── Users.cs
-      └── CustomTasks.csproj
-      └── customtasks.db
-      └── Program.cs
-      └── Teste.http
-   ├── website/ 
-      ├── public/ 
-         └── index.html
-      ├── src/
-         └── App.tsx
-         └── index.tsx
-      └── package-lock.json
-      └── package.json
-   └── README.md
+```bash
+CustomTasks/
+├─ .gitignore
+├─ CustomTasks/ # Onde se concentra todo o backend
+│  ├─ CustomTasks.csproj
+│  ├─ customtasks.db # Criado em seções posteriores
+│  ├─ Models/ # Classes modelo para as tabelas
+│  │  ├─ AppDataContext.cs
+│  │  ├─ Label.cs
+│  │  ├─ Task.cs
+│  │  └─ Users.cs
+│  ├─ Program.cs # Código fonte (.cs)
+│  └─ Teste.http # Arquivo de teste da API
+├─ CustomTasks.sln
+├─ README.md # README do repositório
+├─ website/ # Onde reside todo o frontend 
+│   ├─ package-lock.json # Arquivo de dependências Node.js
+│   ├─ package.json # Outro arquivo de dependências Node.js
+│   ├─ public/ # Arquivos estáticos públicos
+│   │  └─ index.html # Página index
+│   ├─ src/ # Código fonte (.ts ou .tsx)
+│   │  ├─ App.tsx
+│   │  ├─ index.tsx
+│   │  ├─ react-app-env.d.ts
+│   └─ tsconfig.json
 ```
 
 ## Preparando o terreno 🌱
 <p align="justify">
-A aplicação <code>CustomTasks</code> faz extensivo uso dos recursos disponíveis no framework <a href="https://learn.microsoft.com/pt-br/aspnet/entity-framework">EntityCore</a>, disponível na já mencionada plataforma <a href="https://dotnet.microsoft.com/pt-br">.NET</a> (ou "<em>Dotnet</em>" se preferir), sendo mais específico, falo das ferramentas nele presentes que possibilitam a integração com a biblioteca chamada <a href="https://www.sqlite.org/">SQLite</a>, portanto, para que tudo funcione corretamente, vai ser necessário tê-la instalada na máquina onde pretender executar o sistema, não só o "<em>framework</em>", mas também terá de fazer algumas configurações relacionadas ao banco de dados em si, ponto esse que será abordado mais precisamente em um tópico específico dessa seção.
+A aplicação <code>CustomTasks</code> faz extensivo uso dos recursos disponíveis no <a href="https://learn.microsoft.com/pt-br/aspnet/entity-framework"><em>EntityFramework</em></a>, disponível na já mencionada plataforma <a href="https://dotnet.microsoft.com/pt-br"><em>.NET</em></a> (ou "<em>Dotnet</em>" se preferir), sendo mais específico, falo das ferramentas nele presentes que possibilitam a integração com a biblioteca chamada <a href="https://www.sqlite.org/"><em>SQLite</em></a>, portanto, para que tudo funcione corretamente, vai ser necessário tê-la instalada na máquina onde pretender executar o sistema, não só o "<em>framework</em>", mas também terá de fazer algumas configurações relacionadas ao banco de dados em si, ponto esse que será abordado mais precisamente em um tópico específico dessa seção.
 </p>
 
 ### Clonando o repositório ⛓️
