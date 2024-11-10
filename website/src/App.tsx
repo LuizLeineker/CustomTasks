@@ -1,10 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import Home from "./Home";
+import SignUp from "./SignUp";
 
 function App() {
   return (
-    <div className="App">
-      <p>CustomTasks Website</p>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
+      </div>
+  </Router>
   );
 }
 
