@@ -39,7 +39,6 @@ function SignUp() {
                 window.alert("User already exists!");
             } else {
                 console.log("User created successfully");
-                navigate("/teste");
             }
         });
     }
