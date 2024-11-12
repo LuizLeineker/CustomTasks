@@ -37,10 +37,10 @@ app.MapPost("/user/create", async ([FromBody] CustomTasks.Models.User user, [Fro
 });
 
 // Vereficar o login pelo Nome, Email e Senha do Usuário
-app.MapPost("/user/login", async ([FromBody] User userInput, [FromServices] AppDataContext context) =>
+app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppDataContext context) =>
 {
     var user = await context.Users
-        .Where(u => u.Username == userInput.Username && u.Email == userInput.Email && u.Password == userInput.Password)
+        .Where(u => u.Username == LoginUser.Username && u.Email == LoginUser.Email && u.Password == LoginUser.Password)
         .FirstOrDefaultAsync();
     if (user == null)
     {
