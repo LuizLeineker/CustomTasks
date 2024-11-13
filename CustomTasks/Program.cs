@@ -1,6 +1,7 @@
 using CustomTasks.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
@@ -34,6 +35,20 @@ app.MapPost("/user/create", async ([FromBody] CustomTasks.Models.User user, [Fro
     context.SaveChanges();
     return Results.Created("", user);
 });
+
+// Vereficar o login pelo Nome, Email e Senha do Usuário
+app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppDataContext context) =>
+{
+    var user = await context.Users
+        .Where(u => u.Username == LoginUser.Username && u.Email == LoginUser.Email && u.Password == LoginUser.Password)
+        .FirstOrDefaultAsync();
+    if (user == null)
+    {
+        return Results.BadRequest("Name, email or password are incorrect.");
+    }
+    return Results.Ok("Login successfully!");
+});
+
 
 // Retorna os dados do usuário cujo id bata com o parâmetro passado através da URL (caso o id seja válido) 
 app.MapGet("/user/{id}", async ([FromRoute] int id, [FromServices] AppDataContext context) =>
