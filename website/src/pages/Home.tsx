@@ -11,6 +11,9 @@ function Home() {
                 <li>
                     <Link to="/signin">Signin</Link>
                 </li>
+                <li>
+                    <Link to="/list">List Users</Link>
+                </li>
             </ul>
         </div>
     );

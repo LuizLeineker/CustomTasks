@@ -10,6 +10,7 @@ builder.Services.AddDbContext<AppDataContext>();
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowReactWebsite", 
         configs => configs.WithOrigins("http://localhost:3000")
+                    .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod());
 });
