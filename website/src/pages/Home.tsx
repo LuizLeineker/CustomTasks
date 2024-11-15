@@ -14,6 +14,9 @@ function Home() {
                 <li>
                     <Link to="/list">List Users</Link>
                 </li>
+                <li>
+                    <Link to="/tasks/create">Create Task</Link>
+                </li>
             </ul>
         </div>
     );

@@ -34,6 +34,8 @@ function UserList(){
                     <tr>
                         <td>{user.username}</td>
                         <td>{user.email}</td>
+                        <td>{user.userId}</td>
+                        <td>{user.password}</td>
                     </tr>
                 ))}
             </tbody>
