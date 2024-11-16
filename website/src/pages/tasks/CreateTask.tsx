@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Task } from "../../models/Task";
+import { Label } from "../../models/Label";
 
-function CreateTask(){
+function CreateTask({userLabels}: {userLabels: Label[]}){
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [userId, setUserId] = useState("");
@@ -12,7 +13,7 @@ function CreateTask(){
         const task : Task = {
             name : name,
             description : description,
-            userId : Number(userId)
+            userId : Number(userId),
         };
 
         fetch("http://localhost:5182/tasks/create", 
@@ -23,14 +24,12 @@ function CreateTask(){
                 },
                 body : JSON.stringify(task)
             })
-            .then(resposta => {
-                return resposta.json();
-            })
+            .then(resposta => resposta.json())
             .then(produto => {
-                console.log("Task Create");
+                console.log("Task Create", produto);
             });
-
     }
+    
     return (
         <div>
             <form onSubmit={createTask}>
@@ -43,15 +42,16 @@ function CreateTask(){
                 <div>
                     <input type="number" name="userId" onChange={(e: any) => setUserId(e.target.value)} placeholder="User ID" required />
                 </div>
+                <select>
+                    {userLabels.map((ul => (
+                        <option key={ul.labelId} value={ul.labelId}>{ul.labelName}</option>
+                    )))}
+                </select>
                 <div>
                     <input type="submit" value="CREATE" />
                 </div>
             </form>
-
         </div>
-    
-
-
     );
 }
 

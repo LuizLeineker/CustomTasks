@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function SignIn() {
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+
+    const navigate = useNavigate();
 
     function userLogin() {
         // Trocar a URL do fetch pela do endpoint correto criado
@@ -24,7 +27,7 @@ function SignIn() {
                 // Alterar a mensagem exibida para alguma que faça sentido com o contexto de login
                 return window.alert("User already exists!");
             }
-            console.log("Registrado!"); // Não faz sentido
+            navigate("/dashboard");
         })
     }
 

@@ -65,7 +65,7 @@ POST {{baseUrl}}/tasks/create
 Content-Type: application/json
 
 {
-    "name": "Estudar para a prova de Sistemas Inteligente",
+    "name": "Estudar para a prova de Sistemas Inteligentes",
     "description": "Estudar o modelo do Perceptron simples.",
     "userid": 1
 }

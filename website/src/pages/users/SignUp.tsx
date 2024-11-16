@@ -38,7 +38,7 @@ function SignUp() {
             if (!response.ok) {
                 window.alert("User already exists!");
             } else {
-                console.log("User created successfully");
+                navigate("/signin");
             }
         });
     }

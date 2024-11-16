@@ -17,6 +17,9 @@ function Home() {
                 <li>
                     <Link to="/tasks/create">Create Task</Link>
                 </li>
+                <li>
+                    <Link to="/dashboard">Dashboard</Link>
+                </li>
             </ul>
         </div>
     );

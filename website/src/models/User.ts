@@ -1,7 +1,8 @@
 import { Label } from './Label';
 import { Task } from './Task';
+
 export interface User {
-    userId: number
+    userId: number;
     username: string;
     email: string;
     password: string;
