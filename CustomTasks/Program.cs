@@ -52,9 +52,13 @@ app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppD
 
 
 // Retorna os dados do usuário cujo id bata com o parâmetro passado através da URL (caso o id seja válido) 
-app.MapGet("/user/{id}", async ([FromRoute] int id, [FromServices] AppDataContext context) =>
+app.MapGet("/user/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
 {
-    var user = await context.Users.FindAsync(id);
+    var user = context.Users
+    .Include(u => u.Tasks)        // Incluir tarefas do usuário
+    .ThenInclude(t => t.Labels)   // Incluir rótulos de cada tarefa
+    .Include(u => u.Labels)       // Incluir os próprios rótulos do usuário
+    .FirstOrDefault(u => u.UserId == id);
     if (user == null)
     {
         return Results.NotFound("User not found!");
@@ -118,7 +122,11 @@ app.MapPost("/tasks/create", ([FromBody] CustomTasks.Models.Task task, [FromServ
 // Lista todas as tarefas pertencentes ao usuário cujo id bata com o do parâmetro passado através da URL (caso o id corresponda a algum usuário efetivamente)
 app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
 {
-    User? user = context.Users.Include(u => u.Tasks).FirstOrDefault(u => u.UserId == userId);
+    var task = context.Tasks.Include(t => t.Labels);
+    User? user = context.Users
+    .Include(u => u.Tasks)                      // Carrega as tarefas do usuário
+    .ThenInclude(t => t.Labels)              // Carrega os rótulos associados a cada tarefa
+    .FirstOrDefault(u => u.UserId == userId);  
     if (user == null) {
         return Results.NotFound("404 - The ID does not match any user!");
     }

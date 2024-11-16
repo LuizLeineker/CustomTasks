@@ -14,7 +14,7 @@ public class User
     // Definindo quantidade mínima e máxima de caracteres no campo da senha do usuário
     [MinLength(5), MaxLength(30)] public string Password { get; set; } = null!;
     // Navegação de tarefas relacionadas a um usuário em específico
-    public ICollection<Task>? Tasks { get; set; }
+    public ICollection<Task>? Tasks { get; set; } = new List<Task>();
     // Navegação de rótulos/etiquetas relacionadas a um usuário em específico
-    public ICollection<Label>? Labels { get; set; }
+    public ICollection<Label>? Labels { get; set; } = new List<Label>();
 }

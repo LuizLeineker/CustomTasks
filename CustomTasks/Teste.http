@@ -50,6 +50,26 @@ Content-Type: application/json
     "userid": 1
 }
 
+###
+POST {{baseUrl}}/tasks/create
+Content-Type: application/json
+
+{
+    "name": "Estudar para a prova de Python",
+    "description": "Estudar a biblioteca Pandas e a NumPy.",
+    "userid": 1
+}
+
+###
+POST {{baseUrl}}/tasks/create
+Content-Type: application/json
+
+{
+    "name": "Estudar para a prova de Sistemas Inteligente",
+    "description": "Estudar o modelo do Perceptron simples.",
+    "userid": 1
+}
+
 ### Lista (caso houverem) todas as tarefas relacionadas a um usuário específico
 GET {{baseUrl}}/tasks/list/1
 
@@ -72,6 +92,33 @@ Content-Type: application/json
 
 {
     "LabelName": "Estudar",
+    "UserId": 1
+}
+
+### Cria uma/um etiqueta/rótulo
+PUT {{baseUrl}}/label/create
+Content-Type: application/json
+
+{
+    "LabelName": "Trabalho",
+    "UserId": 1
+}
+
+### Cria uma/um etiqueta/rótulo
+PUT {{baseUrl}}/label/create
+Content-Type: application/json
+
+{
+    "LabelName": "Faculdade",
+    "UserId": 1
+}
+
+### Cria uma/um etiqueta/rótulo
+PUT {{baseUrl}}/label/create
+Content-Type: application/json
+
+{
+    "LabelName": "Importante",
     "UserId": 1
 }
 

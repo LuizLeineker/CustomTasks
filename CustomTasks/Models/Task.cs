@@ -13,6 +13,5 @@ public class Task
     // Configurando o relacionamento (chave estrangeira e navegação) com a tabela de usuários (Users)
     public int UserId { get; set; }
     // Navegação de rótulos pertencentes a uma tarefa específica
-    [JsonIgnore]
-    public ICollection<Label>? Labels { get; set; }
+    public ICollection<Label>? Labels { get; set; } = new List<Label>();
 }
