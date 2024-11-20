@@ -1,7 +1,6 @@
 using CustomTasks.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
@@ -36,7 +35,7 @@ app.MapPost("/user/create", async ([FromBody] CustomTasks.Models.User user, [Fro
     return Results.Created("", user);
 });
 
-// Vereficar o login pelo Nome, Email e Senha do Usuário
+// Verificar o login pelo Nome, Email e Senha do Usuário
 app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppDataContext context) =>
 {
     var user = await context.Users
