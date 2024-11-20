@@ -22,68 +22,68 @@ app.MapGet("/", () => "Welcome to the CustomTasks API!");
 //
 
 // Cria usuário (caso o nome e email que serão usados já não existam)
-app.MapPost("/user/create", async ([FromBody] CustomTasks.Models.User user, [FromServices] AppDataContext context) => 
+app.MapPost("/user/create", async ([FromBody] User user, [FromServices] AppDataContext context) => 
 {
-    var existsEmail = await context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
-    if (existsEmail!= null)
+    bool userExists = await context.Users.AnyAsync(u => u.Username.Equals(user.Username) || u.Email.Equals(user.Email));
+    if (userExists)
     {
-        return Results.Conflict("The email is already in use!");
+        return Results.Conflict("This username and/or email are already in use!");
     }
 
+    // Aplicando a função de hashing à senha do usuário por motivos de segurança
+    user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+
     context.Users.Add(user);
-    context.SaveChanges();
+    await context.SaveChangesAsync();
+
     return Results.Created("", user);
 });
 
 // Verificar o login pelo Nome, Email e Senha do Usuário
 app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppDataContext context) =>
 {
-    var user = await context.Users
-        .Where(u => u.Username == LoginUser.Username && u.Email == LoginUser.Email && u.Password == LoginUser.Password)
-        .FirstOrDefaultAsync();
-    if (user == null)
+    // Retorna o usuário com o email e a senha passadas via parâmetro
+    var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(LoginUser.Username) && u.Email == LoginUser.Email);
+    if (user is null)
     {
-        return Results.BadRequest("Name, email or password are incorrect.");
+        return Results.BadRequest("Name or email are incorrect.");
     }
+
+    bool passwordIsCorrect = BCrypt.Net.BCrypt.Verify(LoginUser.Password, user.Password);
+    if (!passwordIsCorrect) 
+    {
+        return Results.BadRequest("The given password is incorrect.");
+    }
+
     return Results.Ok("Login successfully!");
 });
-
 
 // Retorna os dados do usuário cujo id bata com o parâmetro passado através da URL (caso o id seja válido) 
 app.MapGet("/user/{id}", async ([FromRoute] int id, [FromServices] AppDataContext context) =>
 {
     var user = await context.Users.FindAsync(id);
-    if (user == null)
+    if (user is null)
     {
         return Results.NotFound("User not found!");
     }
     return Results.Ok(user);
 });
 
-// Lista todos os usuários cadastrados (caso exista algum)
-app.MapGet("/user/list", ([FromServices] AppDataContext context) =>
-{
-    var usersList =  context.Users.ToList();
-    if (usersList.Count == 0) {
-        return Results.NotFound("404 - No users found.");
-    }
-    return Results.Ok(usersList);
-});
-
 // Atualiza as informações do usuário cujo id bata com o do parâmetro passado através da URL (caso o id seja válido)
 app.MapPut("/user/update/{id}", async ([FromRoute] int id, [FromBody] User userChanges, [FromServices] AppDataContext context) =>
 {
     var user = await context.Users.FindAsync(id);
-    if (user == null)
+    if (user is null)
     {
         return Results.NotFound("404 - The ID does not match any user!");
     }
 
     user.Username = userChanges.Username;
     user.Email = userChanges.Email;
-    user.Password = userChanges.Password;
+    user.Password = BCrypt.Net.BCrypt.HashPassword(userChanges.Password); // Aplicando hashing à nova senha do usuário
 
     await context.SaveChangesAsync();
+
     return Results.Ok("User information has been updated!");
 });
 
@@ -91,13 +91,14 @@ app.MapPut("/user/update/{id}", async ([FromRoute] int id, [FromBody] User userC
 app.MapDelete("/user/delete/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) => 
 {
     var user = await context.Users.FindAsync(id);
-    if (user == null)
+    if (user is null)
     {
         return Results.NotFound("404 - The ID does not match any user!");
     }
 
     context.Users.Remove(user);
     await context.SaveChangesAsync();
+
     return Results.Ok("User removed successfully!");
 });
 
@@ -106,10 +107,11 @@ app.MapDelete("/user/delete/{id}", async ([FromRoute] int id,  [FromServices] Ap
 //
 
 // Cria uma tarefa com base no objeto do tipo task passado via parâmetro através do corpo da requisição
-app.MapPost("/tasks/create", ([FromBody] CustomTasks.Models.Task task, [FromServices] AppDataContext context) => 
+app.MapPost("/tasks/create", async ([FromBody] CustomTasks.Models.Task task, [FromServices] AppDataContext context) => 
 {
     context.Tasks.Add(task);
-    context.SaveChanges();
+    await context.SaveChangesAsync();
+
     return Results.Created("", task);
 });
 
@@ -132,32 +134,34 @@ app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDa
 // Atualiza as informações da tarefa com o valor do id passado via parâmetro através da URL
 app.MapPut("/tasks/update/{id}", async ([FromRoute] int id, CustomTasks.Models.Task task, [FromServices] AppDataContext context) =>
 {
-    var tarefa = await context.Tasks.FindAsync(id);
-    if (tarefa == null){
+    var matchingTask = await context.Tasks.FindAsync(id);
+    if (matchingTask is null){
         return Results.NotFound("404 - The ID does not match any task!");
     }
 
-    tarefa.Name = task.Name;
-    tarefa.Description = task.Description;
-    tarefa.IsCompleted = task.IsCompleted;
-    tarefa.CreatedAt = task.CreatedAt;
-    tarefa.Labels = task.Labels;
+    // Atualizando informações da tarefa
+    matchingTask.Name = task.Name;
+    matchingTask.Description = task.Description;
+    matchingTask.IsCompleted = task.IsCompleted;
+    matchingTask.Labels = task.Labels;
     
     await context.SaveChangesAsync();
+
     return Results.Ok("Task information has been updated!");
 });
 
 // Remove a tarefa com id correspondnete ao passado por parâmetro através da URL (caso o id de fato corresponda a alguma tarefa)
 app.MapDelete("/tasks/delete/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) => 
 {
-    var produto = await context.Tasks.FindAsync(id);
-    if (produto == null)
+    var matchingTask = await context.Tasks.FindAsync(id);
+    if (matchingTask is null)
     {
         return Results.NotFound("404 - The ID does not match any task!");
     }
 
-    context.Tasks.Remove(produto);
+    context.Tasks.Remove(matchingTask);
     await context.SaveChangesAsync();
+    
     return Results.Ok("Task removed successfully!");
 });
 
@@ -170,6 +174,7 @@ app.MapPut("/label/create", async ([FromBody] Label label, [FromServices] AppDat
 {
     context.Labels.Add(label);
     await context.SaveChangesAsync();
+
     return Results.Created("", label);
 });
 
@@ -192,14 +197,15 @@ app.MapGet("/label/list/{userId}", ([FromRoute] int userId, [FromServices] AppDa
 // Remove o rótulo cujo id bata com o do parâmetro passado através da URL (caso o id de fato se refira a alguma etiqueta/rótulo existente no banco)
 app.MapDelete("/label/delete/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) => 
 {
-    var label = await context.Labels.FindAsync(id);
-    if (label == null)
+    var matchingLabel = await context.Labels.FindAsync(id);
+    if (matchingLabel is null)
     {
         return Results.NotFound("404 - ID does not match any label!");
     }
 
-    context.Labels.Remove(label);
+    context.Labels.Remove(matchingLabel);
     await context.SaveChangesAsync();
+    
     return Results.Ok("Label removed successfully!");
 });
 

@@ -72,7 +72,7 @@ Content-Type: application/json
 
 {
     "LabelName": "Estudar",
-    "UserId": 1
+    "userid": 1
 }
 
 ### Remove um rótulo em específico
