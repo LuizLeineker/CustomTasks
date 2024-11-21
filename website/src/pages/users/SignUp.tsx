@@ -5,6 +5,7 @@ function SignUp() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
 
@@ -36,7 +37,7 @@ function SignUp() {
         })
         .then(response => {
             if (!response.ok) {
-                window.alert("User already exists!");
+                alert(`${response.text}`);
             } else {
                 navigate("/signin");
             }
@@ -52,7 +53,7 @@ function SignUp() {
                     <input type="email" name="email" onChange={(e: any) => setEmail(e.target.value)} placeholder="Enter an email address" required />
                 </div>
                 <div>
-                    <input type="password" name="password" onChange={(e: any) => setPassword(e.target.value)} placeholder="Set a password" required />
+                    <input type={showPassword ? "text" : "password"} name="password" onChange={(e: any) => setPassword(e.target.value)} placeholder="Set a password" required /> <button type="button" onClick={(e: any) => setShowPassword(!showPassword)}>SHOW</button>
                 </div>
                 <div>
                     <input type="submit" value="Sign Up" />

@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { Task } from "../models/Task";
 import CreateTask from "./tasks/CreateTask";
 import { Label } from "../models/Label";
+import { render } from "@testing-library/react";
 
 function Dashboard() {
     const [userTasks, setUserTasks] = useState<Task[]>([]);
     const [userLabels, setUserLabels] = useState<Label[]>([]);
-    
-    const taskContainer = document.getElementById("task-container");
 
     useEffect(() => {
         fetch("http://localhost:5182/user/1")

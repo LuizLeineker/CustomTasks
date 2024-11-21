@@ -62,15 +62,22 @@ app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppD
 // Retorna os dados do usuário cujo id bata com o parâmetro passado através da URL (caso o id seja válido) 
 app.MapGet("/user/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
 {
+    var defaultLabels = context.Labels.Where(u => u.UserId == null);
+
     var user = context.Users
-    .Include(u => u.Tasks)        // Incluir tarefas do usuário
-    .ThenInclude(t => t.Labels)   // Incluir rótulos de cada tarefa
-    .Include(u => u.Labels)       // Incluir os próprios rótulos do usuário
-    .FirstOrDefault(u => u.UserId == id);
-    if (user == null)
+    .AsNoTracking()
+    .Where(u => u.UserId.Equals(id))
+    .Include(u => u.Tasks)        // Inclui as tarefas do usuário em particular
+    .ThenInclude(t => t.Labels)   // Inclui os rótulos de cada tarefa
+    .Include(u => u.Labels)       // Inclui os rótulos do usuário em questão
+    .FirstOrDefault();
+    if (user is null)
     {
         return Results.NotFound("User not found!");
     }
+
+    user.Labels.AddRange(defaultLabels);
+    
     return Results.Ok(user);
 });
 
@@ -114,6 +121,11 @@ app.MapDelete("/user/delete/{id}", async ([FromRoute] int id,  [FromServices] Ap
 // Cria uma tarefa com base no objeto do tipo task passado via parâmetro através do corpo da requisição
 app.MapPost("/tasks/create", async ([FromBody] CustomTasks.Models.Task task, [FromServices] AppDataContext context) => 
 {
+    // Anexando cada uma das etiquetas presentes na tarefa ao contexto 
+    foreach (var label in task.Labels)
+    {
+        context.Labels.Attach(label);
+    }
     context.Tasks.Add(task);
     await context.SaveChangesAsync();
 

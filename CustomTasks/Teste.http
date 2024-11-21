@@ -21,6 +21,17 @@ Content-Type: application/json
     "password": "testeusuario"
 }
 
+### Verificação do login
+POST {{baseUrl}}/user/login
+Content-Type: application/json
+
+{
+    "username": "Luiz Smith",
+    "email": "luiz@email.com",
+    "password": "testealteracao"
+}
+
+
 ### Retorna as informações de um usuário específico
 GET {{baseUrl}}/user/1
 

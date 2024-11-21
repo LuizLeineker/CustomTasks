@@ -6,6 +6,7 @@ function CreateTask({userLabels}: {userLabels: Label[]}){
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [userId, setUserId] = useState("");
+    const[labelsIds, setLabelsIds] = useState<number[]>([]);
 
     function createTask(e : any){
         e.preventDefault();
@@ -14,6 +15,7 @@ function CreateTask({userLabels}: {userLabels: Label[]}){
             name : name,
             description : description,
             userId : Number(userId),
+            labels: userLabels.filter(ul => labelsIds.includes(ul.labelId))
         };
 
         fetch("http://localhost:5182/tasks/create", 
@@ -32,7 +34,7 @@ function CreateTask({userLabels}: {userLabels: Label[]}){
     
     return (
         <div>
-            <form onSubmit={createTask}>
+            <form onSubmit={createTask} method="POST">
                 <div>
                     <input type="text" name="name" onChange={(e: any) => setName(e.target.value)} placeholder="Insert name" required />
                 </div>
@@ -42,7 +44,7 @@ function CreateTask({userLabels}: {userLabels: Label[]}){
                 <div>
                     <input type="number" name="userId" onChange={(e: any) => setUserId(e.target.value)} placeholder="User ID" required />
                 </div>
-                <select>
+                <select name="labelsId" onChange={(e: any) => setLabelsIds(Array.from(e.target.selectedOptions, (option: any) => Number.parseInt(option.value, 10)))} multiple>
                     {userLabels.map((ul => (
                         <option key={ul.labelId} value={ul.labelId}>{ul.labelName}</option>
                     )))}
