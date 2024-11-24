@@ -33,7 +33,7 @@ Content-Type: application/json
 
 
 ### Retorna as informações de um usuário específico
-GET {{baseUrl}}/user/1
+GET {{baseUrl}}/user/Brian
 
 ### Lista (caso houverem) todos os usuários presentes no banco
 GET {{baseUrl}}/user/list

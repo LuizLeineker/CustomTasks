@@ -1,3 +1,4 @@
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,36 +13,34 @@ function SignUp() {
     function registerUser(e: any) {
         e.preventDefault();
 
-        if (username.length < 5 || username.length > 30) {
-            return window.alert("The username must have at least 5 characters and does not exceed 30.");
-        }
-
-        if (email.length > 254) {
-            return window.alert("The maximum length of an email address is 254 characters.");
-        }
-
-        if (password.length < 5 || username.length > 30) {
-            return window.alert("The password must have at least 5 characters and does not exceed 30.");
-        }
-
-        fetch("http://localhost:5182/user/create", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
+        axios.post("http://localhost:5182/user/create",
+            {
                 username: username,
-                email: email,
-                password: password
-            })
-        })
-        .then(response => {
-            if (!response.ok) {
-                alert(`${response.text}`);
-            } else {
-                navigate("/signin");
+                password: password,
+                email: email
             }
-        });
+        )
+        .then(() => navigate("/signin"))
+        .catch((error: AxiosError) => alert(`${error.response?.statusText}: ${error.response?.data}`))
+
+        // fetch("http://localhost:5182/user/create", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify({
+        //         username: username,
+        //         email: email,
+        //         password: password
+        //     })
+        // })
+        // .then(response => {
+        //     if (!response.ok) {
+        //         alert(`${response.text}`);
+        //     } else {
+        //         navigate("/signin");
+        //     }
+        // });
     }
 
         return (
@@ -53,7 +52,8 @@ function SignUp() {
                     <input type="email" name="email" onChange={(e: any) => setEmail(e.target.value)} placeholder="Enter an email address" required />
                 </div>
                 <div>
-                    <input type={showPassword ? "text" : "password"} name="password" onChange={(e: any) => setPassword(e.target.value)} placeholder="Set a password" required /> <button type="button" onClick={(e: any) => setShowPassword(!showPassword)}>SHOW</button>
+                    <input type={showPassword ? "text" : "password"} name="password" onChange={(e: any) => setPassword(e.target.value)} placeholder="Set a password" required />
+                    <button type="button" onClick={(e: any) => setShowPassword(!showPassword)}>SHOW</button>
                 </div>
                 <div>
                     <input type="submit" value="Sign Up" />

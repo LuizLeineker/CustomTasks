@@ -23,65 +23,67 @@ app.MapGet("/", () => "Welcome to the CustomTasks API!");
 //
 
 // Cria usuário (caso o nome e email que serão usados já não existam)
-app.MapPost("/user/create", async ([FromBody] User user, [FromServices] AppDataContext context) => 
+app.MapPost("/user/create", async ([FromBody] User inputUser, [FromServices] AppDataContext context) => 
 {
-    bool userExists = await context.Users.AnyAsync(u => u.Username.Equals(user.Username) || u.Email.Equals(user.Email));
-    if (userExists)
+    try 
     {
-        return Results.Conflict("This username and/or email are already in use!");
+        // Aplicando a função de hashing à senha do usuário por motivos de segurança
+        inputUser.Password = BCrypt.Net.BCrypt.HashPassword(inputUser.Password);
+
+        await context.Users.AddAsync(inputUser);
+        await context.SaveChangesAsync();       
+    }
+    catch (DbUpdateException)
+    {
+        return Results.Conflict("Username and/or email are already in use!");
     }
 
-    // Aplicando a função de hashing à senha do usuário por motivos de segurança
-    user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-
-    context.Users.Add(user);
-    await context.SaveChangesAsync();
-
-    return Results.Created("", user);
+    return Results.Created("", inputUser);
 });
 
 // Verificar o login pelo Nome, Email e Senha do Usuário
-app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppDataContext context) =>
+app.MapPost("/user/login", async ([FromBody] User inputUser, [FromServices] AppDataContext context) =>
 {
     // Retorna o usuário com o email e a senha passadas via parâmetro
-    var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(LoginUser.Username) && u.Email == LoginUser.Email);
+    var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(inputUser.Username) && u.Email.Equals(inputUser.Email));
     if (user is null)
     {
-        return Results.BadRequest("Name or email are incorrect.");
+        return Results.BadRequest("Name and/or email are incorrect.");
     }
 
-    bool passwordIsCorrect = BCrypt.Net.BCrypt.Verify(LoginUser.Password, user.Password);
+    bool passwordIsCorrect = BCrypt.Net.BCrypt.Verify(inputUser.Password, user.Password);
     if (!passwordIsCorrect) 
     {
-        return Results.BadRequest("The given password is incorrect.");
+        return Results.Unauthorized();
     }
 
-    return Results.Ok("Login successfully!");
+    return Results.Ok(user.Username);
 });
 
 // Retorna os dados do usuário cujo id bata com o parâmetro passado através da URL (caso o id seja válido) 
-app.MapGet("/user/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
+app.MapGet("/user/{username}", ([FromRoute] string username, [FromServices] AppDataContext context) =>
 {
+    // Obtendo lista com os rótulos padrão
     var defaultLabels = context.Labels.Where(u => u.UserId == null);
 
     var user = context.Users
-    .AsNoTracking()
-    .Where(u => u.UserId.Equals(id))
+    .Where(u => u.Username.Equals(username))
     .Include(u => u.Tasks)        // Inclui as tarefas do usuário em particular
     .ThenInclude(t => t.Labels)   // Inclui os rótulos de cada tarefa
     .Include(u => u.Labels)       // Inclui os rótulos do usuário em questão
     .FirstOrDefault();
     if (user is null)
     {
-        return Results.NotFound("User not found!");
+        return Results.NotFound("User not found.");
     }
 
+    // Montando a lista de todas as labels do usuário (incluindo as padrões)
     user.Labels.AddRange(defaultLabels);
     
     return Results.Ok(user);
 });
 
-// Atualiza as informações do usuário cujo id bata com o do parâmetro passado através da URL (caso o id seja válido)
+// Atualiza as informações do usuário cujo nome bata com o do parâmetro passado através da URL (caso o id seja válido)
 app.MapPut("/user/update/{id}", async ([FromRoute] int id, [FromBody] User userChanges, [FromServices] AppDataContext context) =>
 {
     var user = await context.Users.FindAsync(id);
@@ -121,35 +123,28 @@ app.MapDelete("/user/delete/{id}", async ([FromRoute] int id,  [FromServices] Ap
 // Cria uma tarefa com base no objeto do tipo task passado via parâmetro através do corpo da requisição
 app.MapPost("/tasks/create", async ([FromBody] CustomTasks.Models.Task task, [FromServices] AppDataContext context) => 
 {
-    // Anexando cada uma das etiquetas presentes na tarefa ao contexto 
-    foreach (var label in task.Labels)
-    {
-        context.Labels.Attach(label);
-    }
-    context.Tasks.Add(task);
+    // Anexando cada uma das etiquetas presentes na tarefa ao contexto e marcando-as como não modificadas
+    context.Labels.AttachRange(task.Labels);
+
+    await context.Tasks.AddAsync(task);
     await context.SaveChangesAsync();
 
     return Results.Created("", task);
 });
 
 // Lista todas as tarefas pertencentes ao usuário cujo id bata com o do parâmetro passado através da URL (caso o id corresponda a algum usuário efetivamente)
-app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
+app.MapGet("/tasks/list/{username}", ([FromRoute] string username, [FromServices] AppDataContext context) =>
 {
-    var task = context.Tasks.Include(t => t.Labels);
     User? user = context.Users
+    .Where(u => u.Username.Equals(username))     // Busca o usuário baseado no nome
     .Include(u => u.Tasks)                      // Carrega as tarefas do usuário
-    .ThenInclude(t => t.Labels)              // Carrega os rótulos associados a cada tarefa
-    .FirstOrDefault(u => u.UserId == userId);  
-    if (user == null) {
-        return Results.NotFound("404 - The ID does not match any user!");
+    .ThenInclude(t => t.Labels)                // Carrega os rótulos associados a cada tarefa
+    .FirstOrDefault();  
+    if (user is null) {
+        return Results.NotFound("Given username does not match any user.");
     }
 
-    var userTasks = user.Tasks;
-    if (userTasks == null || userTasks.Count() == 0) {
-        return Results.NoContent();
-    }
-
-    return Results.Ok(userTasks.ToList());
+    return Results.Ok(user.Tasks.ToList());
 });
 
 // Atualiza as informações da tarefa com o valor do id passado via parâmetro através da URL
