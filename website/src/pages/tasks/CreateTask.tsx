@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Task } from "../../models/Task";
 import { Label } from "../../models/Label";
 
@@ -15,7 +15,7 @@ function CreateTask({userLabels}: {userLabels: Label[]}){
             name : name,
             description : description,
             userId : Number(userId),
-            labels: userLabels.filter(ul => labelsIds.includes(ul.labelId))
+            labels: userLabels.filter(ul => labelsIds.includes(ul.labelId!))
         };
 
         fetch("http://localhost:5182/tasks/create", 
