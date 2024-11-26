@@ -6,10 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
 
 // Habilitando CORS e política que permite requisições com origem (composta por esquema, domínio e porta) do website feito em React
-builder.Services.AddCors(options => {
-    options.AddPolicy("AllowReactWebsite", 
-        configs => configs.WithOrigins("http://localhost:3000")
-                    .AllowAnyOrigin()
+builder.Services.AddCors(options => 
+{
+    options.AddPolicy("AllowReactWebsite", configs => 
+                    configs.WithOrigins("http://localhost:3000")
                     .AllowAnyHeader()
                     .AllowAnyMethod());
 });
@@ -45,7 +45,8 @@ app.MapPost("/user/create", async ([FromBody] User inputUser, [FromServices] App
 app.MapPost("/user/login", async ([FromBody] User inputUser, [FromServices] AppDataContext context) =>
 {
     // Retorna o usuário com o email e a senha passadas via parâmetro
-    var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(inputUser.Username) && u.Email.Equals(inputUser.Email));
+    var user = await context.Users
+    .FirstOrDefaultAsync(u => u.Username.Equals(inputUser.Username) && u.Email.Equals(inputUser.Email));
     if (user is null)
     {
         return Results.BadRequest("Name and/or email are incorrect.");
@@ -195,19 +196,17 @@ app.MapPut("/label/create", async ([FromBody] Label label, [FromServices] AppDat
 });
 
 // Retorna todos os rótulos associados ao usuário com o id passado por argumento através da URL (caso ele possua algum e o id seja válido)
-app.MapGet("/label/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
+app.MapGet("/label/list/{username}", ([FromRoute] int username, [FromServices] AppDataContext context) =>
 {
-    User? user = context.Users.Include(u => u.Labels).FirstOrDefault(u => u.UserId == userId);
-    if (user == null) {
-        return Results.NotFound("404 - The ID does not match any user!");
+    User? user = context.Users
+    .Where(u => u.Username.Equals(username))
+    .Include(u => u.Labels)
+    .FirstOrDefault();
+    if (user is null) {
+        return Results.NotFound("Given username does not match any user.");
     }
 
-    var userLabels = user.Labels;
-    if (userLabels == null || userLabels.Count() == 0) {
-        return Results.NoContent();
-    }
-
-    return Results.Ok(userLabels.ToList());
+    return Results.Ok(user.Labels.ToList());
 });
 
 // Remove o rótulo cujo id bata com o do parâmetro passado através da URL (caso o id de fato se refira a alguma etiqueta/rótulo existente no banco)
@@ -216,7 +215,7 @@ app.MapDelete("/label/delete/{id}", async ([FromRoute] int id,  [FromServices] A
     var matchingLabel = await context.Labels.FindAsync(id);
     if (matchingLabel is null)
     {
-        return Results.NotFound("404 - ID does not match any label!");
+        return Results.NotFound("Id does not match any label!");
     }
 
     context.Labels.Remove(matchingLabel);
