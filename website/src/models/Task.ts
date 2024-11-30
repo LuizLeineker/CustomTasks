@@ -5,7 +5,8 @@ export interface Task {       /* coloquei ? provisoriamente, porem só vai em da
     name: string;
     description?: string;
     isCompleted?: boolean;
-    createdAt?: Date;
+    createdAt?: string;
     userId: number;
-    labels?: Label[];
+    labelId?: number;
+    labels?: Label;
   }

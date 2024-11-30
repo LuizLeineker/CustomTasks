@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { Task } from "../../models/Task";
+import { useParams } from "react-router-dom";
 
-function CreateTask(){
+function UpdateTask(){
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [userId, setUserId] = useState("");
 
-    function createTask(e : any){
+    const { taskId } = useParams();
+    
+    function update(e : any){
         e.preventDefault();
 
         const task : Task = {
@@ -15,34 +18,32 @@ function CreateTask(){
             userId : Number(userId)
         };
 
-        fetch("http://localhost:5182/tasks/create", 
+        fetch(`http://localhost:5182/tasks/update/${taskId}`, 
             {
-                method : "POST",
+                method : "PUT",
                 headers : {
                     "Content-Type" : "application/json"
                 },
                 body : JSON.stringify(task)
             })
             .then(resposta => {
-                console.log("Task Create");
+                console.log("Task Update");
                 return resposta.json();
             })
            
     }
     return (
         <div>
-            <form onSubmit={createTask}>
+            <form onSubmit={update}>
                 <div>
                     <input type="text" name="name" onChange={(e: any) => setName(e.target.value)} placeholder="Insert name" required />
                 </div>
                 <div>
                     <input type="text" name="description" onChange={(e: any) => setDescription(e.target.value)} placeholder="Insert description"/>
                 </div>
+                
                 <div>
-                    <input type="number" name="userId" onChange={(e: any) => setUserId(e.target.value)} placeholder="User ID" required />
-                </div>
-                <div>
-                    <input type="submit" value="CREATE" />
+                    <input type="submit" value="UPDATE" />
                 </div>
             </form>
 
@@ -54,4 +55,4 @@ function CreateTask(){
 }
 
 
-export default CreateTask;
+export default UpdateTask;

@@ -1,42 +1,36 @@
 import { useEffect, useState } from "react";
-import { Task } from "../../models/Task";
+import { Label } from "../../models/Label";
 
-function CreateTask(){
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
+function CreateLabel(){
+    const [labelName, setLabelName] = useState("");
     const [userId, setUserId] = useState("");
 
-    function createTask(e : any){
+    function newLabel(e : any){
         e.preventDefault();
 
-        const task : Task = {
-            name : name,
-            description : description,
+        const label : Label = {
+            labelName : labelName,
             userId : Number(userId)
         };
 
-        fetch("http://localhost:5182/tasks/create", 
+        fetch("http://localhost:5182/label/create", 
             {
                 method : "POST",
                 headers : {
                     "Content-Type" : "application/json"
                 },
-                body : JSON.stringify(task)
+                body : JSON.stringify(label)
             })
             .then(resposta => {
-                console.log("Task Create");
                 return resposta.json();
             })
            
     }
     return (
         <div>
-            <form onSubmit={createTask}>
+            <form onSubmit={newLabel}>
                 <div>
-                    <input type="text" name="name" onChange={(e: any) => setName(e.target.value)} placeholder="Insert name" required />
-                </div>
-                <div>
-                    <input type="text" name="description" onChange={(e: any) => setDescription(e.target.value)} placeholder="Insert description"/>
+                    <input type="text" name="name" onChange={(e: any) => setLabelName(e.target.value)} placeholder="Insert name" required />
                 </div>
                 <div>
                     <input type="number" name="userId" onChange={(e: any) => setUserId(e.target.value)} placeholder="User ID" required />
@@ -54,4 +48,4 @@ function CreateTask(){
 }
 
 
-export default CreateTask;
+export default CreateLabel;

@@ -115,10 +115,10 @@ app.MapPost("/tasks/create", ([FromBody] CustomTasks.Models.Task task, [FromServ
     return Results.Created("", task);
 });
 
-// Lista todas as tarefas pertencentes ao usuário cujo id bata com o do parâmetro passado através da URL (caso o id corresponda a algum usuário efetivamente)
-app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
+// Lista todas as tarefas pertencentes ao usuário cujo o nome bata com o do parâmetro passado através da URL 
+app.MapGet("/tasks/list/{username}", ([FromRoute] string username, [FromServices] AppDataContext context) =>
 {
-    User? user = context.Users.Include(u => u.Tasks).FirstOrDefault(u => u.UserId == userId);
+    User? user = context.Users.Include(u => u.Tasks).FirstOrDefault(u => u.Username == username);
     if (user == null) {
         return Results.NotFound("404 - The ID does not match any user!");
     }
@@ -130,6 +130,10 @@ app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDa
 
     return Results.Ok(userTasks.ToList());
 });
+
+
+
+
 
 // Atualiza as informações da tarefa com o valor do id passado via parâmetro através da URL
 app.MapPut("/tasks/update/{id}", async ([FromRoute] int id, CustomTasks.Models.Task task, [FromServices] AppDataContext context) =>
@@ -149,16 +153,31 @@ app.MapPut("/tasks/update/{id}", async ([FromRoute] int id, CustomTasks.Models.T
     return Results.Ok("Task information has been updated!");
 });
 
+// Update no status da tarefa com base no id passado via parâmetro através da URL
+app.MapPut("/tasks/status/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) =>
+{
+    var tarefa = await context.Tasks.FindAsync(id);
+    if (tarefa == null){
+        return Results.NotFound("404 - The ID does not match any task!");
+    }
+
+    tarefa.IsCompleted = true;
+  
+    await context.SaveChangesAsync();
+    return Results.Ok("Task information has been updated!");
+});
+
+
 // Remove a tarefa com id correspondnete ao passado por parâmetro através da URL (caso o id de fato corresponda a alguma tarefa)
 app.MapDelete("/tasks/delete/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) => 
 {
-    var produto = await context.Tasks.FindAsync(id);
-    if (produto == null)
+    var task = await context.Tasks.FindAsync(id);
+    if (task == null)
     {
         return Results.NotFound("404 - The ID does not match any task!");
     }
 
-    context.Tasks.Remove(produto);
+    context.Tasks.Remove(task);
     await context.SaveChangesAsync();
     return Results.Ok("Task removed successfully!");
 });
@@ -168,7 +187,7 @@ app.MapDelete("/tasks/delete/{id}", async ([FromRoute] int id,  [FromServices] A
 //
 
 // Cria uma etiqueta/rótulo tomando como referência o objeto de rótulo passado por argumento através do corpo da requisição
-app.MapPut("/label/create", async ([FromBody] Label label, [FromServices] AppDataContext context) =>
+app.MapPost("/label/create", async ([FromBody] Label label, [FromServices] AppDataContext context) =>
 {
     context.Labels.Add(label);
     await context.SaveChangesAsync();
@@ -176,9 +195,9 @@ app.MapPut("/label/create", async ([FromBody] Label label, [FromServices] AppDat
 });
 
 // Retorna todos os rótulos associados ao usuário com o id passado por argumento através da URL (caso ele possua algum e o id seja válido)
-app.MapGet("/label/list/{userId}", ([FromRoute] int userId, [FromServices] AppDataContext context) =>
+app.MapGet("/label/list/{username}", ([FromRoute] string username, [FromServices] AppDataContext context) =>
 {
-    User? user = context.Users.Include(u => u.Labels).FirstOrDefault(u => u.UserId == userId);
+    User? user = context.Users.Include(u => u.Labels).FirstOrDefault(u => u.Username == username);
     if (user == null) {
         return Results.NotFound("404 - The ID does not match any user!");
     }

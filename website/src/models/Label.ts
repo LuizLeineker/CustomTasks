@@ -1,4 +1,5 @@
 export interface Label {
-    labelId: number;
-    name: string;
+    labelId?: number;
+    labelName: string;
+    userId: number;
   }

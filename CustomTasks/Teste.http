@@ -51,10 +51,11 @@ Content-Type: application/json
 }
 
 ### Lista (caso houverem) todas as tarefas relacionadas a um usuário específico
-GET {{baseUrl}}/tasks/list/1
+GET {{baseUrl}}/tasks/list/Barone
+
 
 ### Atualiza as informações de uma tarefa em particular
-PUT {{baseUrl}}/tasks/update/1
+PUT {{baseUrl}}/tasks/update/27
 Content-Type: application/json
 
 {
@@ -63,20 +64,24 @@ Content-Type: application/json
     "userid": 1
 }
 
+### Status Task
+PUT {{baseUrl}}/tasks/status/25
+
+
 ### Remove uma tarefa em particular
 DELETE  {{baseUrl}}/tasks/delete/1
 
 ### Cria uma/um etiqueta/rótulo
-PUT {{baseUrl}}/label/create
+POST {{baseUrl}}/label/create
 Content-Type: application/json
 
 {
-    "LabelName": "Estudar",
-    "UserId": 1
+    "LabelName": "ag",
+    "UserId": 2
 }
 
 ### Remove um rótulo em específico
 DELETE {{baseUrl}}/label/delete/1
 
 ### Retorna todos os rótulos relacionados a um usuário em específico
-GET {{baseUrl}}/label/list/1
+GET {{baseUrl}}/label/list/Barone

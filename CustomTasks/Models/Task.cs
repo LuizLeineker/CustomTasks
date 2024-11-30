@@ -8,7 +8,7 @@ public class Task
     public int TaskId { get; set; }
     [MinLength(5), MaxLength(30)] public string Name { get; set; } = null!;
     public string? Description { get; set; }
-    public bool IsCompleted { get; set; }
+    public bool IsCompleted { get; set; } = false;  
     public DateTime CreatedAt { get; set; }
     // Configurando o relacionamento (chave estrangeira e navegação) com a tabela de usuários (Users)
     public int UserId { get; set; }
