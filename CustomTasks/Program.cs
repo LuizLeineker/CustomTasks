@@ -119,17 +119,16 @@ app.MapPost("/tasks/create", async ([FromBody] CustomTasks.Models.Task task, [Fr
 // Lista todas as tarefas pertencentes ao usuário cujo o nome bata com o do parâmetro passado através da URL 
 app.MapGet("/tasks/list/{username}", ([FromRoute] string username, [FromServices] AppDataContext context) =>
 {
-    User? user = context.Users.Include(u => u.Tasks).FirstOrDefault(u => u.Username == username);
+    User? user = context.Users
+    .Where(u => u.Username.Equals(username))
+    .Include(u => u.Tasks)
+    .ThenInclude(t => t.Labels)
+    .FirstOrDefault();
     if (user == null) {
-        return Results.NotFound("Id does not match any user.");
+        return Results.NotFound("Username does not match any user.");
     }
 
-    var userTasks = user.Tasks;
-    if (userTasks == null || userTasks.Count() == 0) {
-        return Results.NoContent();
-    }
-
-    return Results.Ok(userTasks.ToList());
+    return Results.Ok(user.Tasks.ToList());
 });
 
 // Atualiza as informações da tarefa com o valor do id passado via parâmetro através da URL
@@ -199,17 +198,15 @@ app.MapPost("/label/create", async ([FromBody] Label label, [FromServices] AppDa
 // Retorna todos os rótulos associados ao usuário com o id passado por argumento através da URL (caso ele possua algum e o id seja válido)
 app.MapGet("/label/list/{username}", ([FromRoute] string username, [FromServices] AppDataContext context) =>
 {
-    User? user = context.Users.Include(u => u.Labels).FirstOrDefault(u => u.Username == username);
-    if (user == null) {
-        return Results.NotFound("Id does not match any user.");
+    User? user = context.Users
+    .Where(u => u.Username.Equals(username))
+    .Include(u => u.Labels)
+    .FirstOrDefault();
+    if (user is null) {
+        return Results.NotFound("Username does not match any user.");
     }
 
-    var userLabels = user.Labels;
-    if (userLabels == null || userLabels.Count() == 0) {
-        return Results.NoContent();
-    }
-
-    return Results.Ok(userLabels.ToList());
+    return Results.Ok(user.Labels.ToList());
 });
 
 // Remove o rótulo cujo id bata com o do parâmetro passado através da URL (caso o id de fato se refira a alguma etiqueta/rótulo existente no banco)
