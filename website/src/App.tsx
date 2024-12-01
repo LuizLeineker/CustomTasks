@@ -8,6 +8,8 @@ import SearchTask from "./pages/tasks/SearchTask";
 import UpdateTask from "./pages/tasks/UpdateTask";
 import ListLabel from "./pages/labels/ListLabel";
 import CreateLabel from "./pages/labels/CreateLabel";
+import Dashboard from "./pages/content/Dashboard";
+import Category from "./pages/content/Category";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/label" element={<Category/>} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/tasks/create" element={<CreateTask />} />

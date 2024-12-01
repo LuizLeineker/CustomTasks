@@ -28,6 +28,7 @@ function CreateLabel(){
     }
     return (
         <div>
+            <h1>Insira um nome para o seu Rótulo: </h1>
             <form onSubmit={newLabel}>
                 <div>
                     <input type="text" name="name" onChange={(e: any) => setLabelName(e.target.value)} placeholder="Insert name" required />

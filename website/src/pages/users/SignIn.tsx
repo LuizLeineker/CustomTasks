@@ -29,6 +29,8 @@ function SignIn() {
     }
 
     return (
+        <div>
+        <h1>LOGIN</h1>   
         <form onSubmit={userLogin}>
             <div>
                 <input type="text" name="username" onChange={(e: any) => setUsername(e.target.value)} required />
@@ -37,12 +39,13 @@ function SignIn() {
                 <input type="text" name="email" onChange={(e: any) => setEmail(e.target.value)} required />
             </div>
             <div>
-                <input type="text" name="password" onChange={(e: any) => setPassword(e.target.value)} required />
+                <input type="password" name="password" onChange={(e: any) => setPassword(e.target.value)} required />
             </div>
             <div>
                 <input type="submit" value="Sign in" />
             </div>
         </form>
+        </div>
     )
 }
 

@@ -44,6 +44,8 @@ function SignUp() {
     }
 
         return (
+            <div>
+            <h1>REGISTER</h1>
             <form onSubmit={registerUser}>
                 <div>
                     <input type="text" name="username" onChange={(e: any) => setUsername(e.target.value)} placeholder="Choose a username" required />
@@ -58,6 +60,7 @@ function SignUp() {
                     <input type="submit" value="Sign Up" />
                 </div>
             </form>
+            </div>
         );
 }
 

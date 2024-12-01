@@ -22,9 +22,9 @@ function SearchTask() {
 
 
     function status(taskId: number) {
-        console.log(`Id: ${taskId}`);
         axios
           .put(`http://localhost:5182/tasks/status/${taskId}`)
+          console.log(`Id: ${taskId} completed` );
       }
 
     function remove(taskId: number) {

@@ -34,6 +34,7 @@ function UpdateTask(){
     }
     return (
         <div>
+            <h1>Informe os dados para atualizar a Tarefa</h1>
             <form onSubmit={update}>
                 <div>
                     <input type="text" name="name" onChange={(e: any) => setName(e.target.value)} placeholder="Insert name" required />
