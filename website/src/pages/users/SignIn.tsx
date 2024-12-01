@@ -1,6 +1,6 @@
 import { Email, EmailOutlined, LockOutlined, Login, Lock, LoginOutlined, Person, PersonOutline, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Box, Button, InputAdornment, Paper, TextField } from "@mui/material";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -29,7 +29,7 @@ function SignIn() {
             }
         )
         .then(({ data }) => navigate(`/dashboard/${data}`))
-        .catch((error: AxiosError) =>
+        .catch(error =>
             {
                 const data = error.response?.data as string;
                 if (data.includes("password")) {

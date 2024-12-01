@@ -1,6 +1,6 @@
 import { Email, EmailOutlined, Lock, LockOutlined, Person, PersonOutline, SendOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Box, Button, InputAdornment, Paper, TextField } from "@mui/material";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 

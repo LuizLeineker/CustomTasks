@@ -8,5 +8,5 @@ export interface Task {       /* coloquei ? provisoriamente, porem só vai em da
     createdAt?: string;
     userId: number;
     labelId?: number;
-    labels?: Label;
+    labels?: Label[];
   }
