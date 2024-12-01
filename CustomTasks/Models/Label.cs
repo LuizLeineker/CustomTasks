@@ -11,8 +11,7 @@ public class Label
     public int LabelId { get; set; }
     [MinLength(5), MaxLength(30)] public string LabelName { get; set; } = null!;
     // Cofnigurando relacionamento (chave estrangeira e navegação) com a tabela de usuáiros (Users)
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
     // Navegação de tarefas com um rótulo específico
-    [JsonIgnore]
-    public ICollection<Task>? Tasks { get; set; }
+    public ICollection<Task> Tasks { get; set; } = new List<Task>();
 }

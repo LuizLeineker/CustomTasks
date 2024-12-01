@@ -11,7 +11,7 @@ Content-Type: application/json
     "password": "testeusuario"
 }
 
-### vereficação do login
+### Verificação do login
 POST {{baseUrl}}/user/login
 Content-Type: application/json
 
@@ -65,19 +65,27 @@ Content-Type: application/json
 }
 
 ### Status Task
-PUT {{baseUrl}}/tasks/status/25
+PATCH  {{baseUrl}}/tasks/status/25
 
 
 ### Remove uma tarefa em particular
 DELETE  {{baseUrl}}/tasks/delete/1
 
-### Cria uma/um etiqueta/rótulo
+### Cria uma/um etiqueta/rótulo (2)
 POST {{baseUrl}}/label/create
 Content-Type: application/json
 
 {
     "LabelName": "ag",
     "UserId": 2
+}
+
+###
+POST {{baseUrl}}/label/create
+
+{
+    "LabelName": "Estudar",
+    "userid": 1
 }
 
 ### Remove um rótulo em específico
