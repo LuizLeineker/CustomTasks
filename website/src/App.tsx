@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Home from "./pages/Home";
+import Home from "./pages/content/Home";
 import SignUp from "./pages/users/SignUp";
 import SignIn from "./pages/users/SignIn";
 import CreateTask from "./pages/tasks/CreateTask";
