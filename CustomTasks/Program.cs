@@ -43,10 +43,10 @@ app.MapPost("/user/create", async ([FromBody] User user, [FromServices] AppDataC
 app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppDataContext context) =>
 {
     // Retorna o usuário com o email e a senha passadas via parâmetro
-    var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(LoginUser.Username) && u.Email == LoginUser.Email);
+    User? user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(LoginUser.Username) && u.Email.Equals(LoginUser.Email));
     if (user is null)
     {
-        return Results.BadRequest("Name or email are incorrect.");
+        return Results.BadRequest("Name and/or email are incorrect.");
     }
 
     bool passwordIsCorrect = BCrypt.Net.BCrypt.Verify(LoginUser.Password, user.Password);
@@ -55,7 +55,7 @@ app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppD
         return Results.BadRequest("Given password is incorrect.");
     }
 
-    return Results.Ok("Login successfully.");
+    return Results.Ok(user.Username);
 });
 
 // Retorna os dados do usuário cujo id bata com o parâmetro passado através da URL (caso o id seja válido) 
