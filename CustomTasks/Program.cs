@@ -27,7 +27,7 @@ app.MapPost("/user/create", async ([FromBody] User user, [FromServices] AppDataC
     bool userExists = await context.Users.AnyAsync(u => u.Username.Equals(user.Username) || u.Email.Equals(user.Email));
     if (userExists)
     {
-        return Results.Conflict("This username and/or email are already in use!");
+        return Results.Conflict("Username and/or email are already in use.");
     }
 
     // Aplicando a função de hashing à senha do usuário por motivos de segurança
@@ -52,10 +52,10 @@ app.MapPost("/user/login", async ([FromBody] User LoginUser, [FromServices] AppD
     bool passwordIsCorrect = BCrypt.Net.BCrypt.Verify(LoginUser.Password, user.Password);
     if (!passwordIsCorrect) 
     {
-        return Results.BadRequest("The given password is incorrect.");
+        return Results.BadRequest("Given password is incorrect.");
     }
 
-    return Results.Ok("Login successfully!");
+    return Results.Ok("Login successfully.");
 });
 
 // Retorna os dados do usuário cujo id bata com o parâmetro passado através da URL (caso o id seja válido) 
@@ -64,7 +64,7 @@ app.MapGet("/user/{id}", async ([FromRoute] int id, [FromServices] AppDataContex
     var user = await context.Users.FindAsync(id);
     if (user is null)
     {
-        return Results.NotFound("User not found!");
+        return Results.NotFound("User not found.");
     }
     return Results.Ok(user);
 });
@@ -75,7 +75,7 @@ app.MapPut("/user/update/{id}", async ([FromRoute] int id, [FromBody] User userC
     var user = await context.Users.FindAsync(id);
     if (user is null)
     {
-        return Results.NotFound("404 - The ID does not match any user!");
+        return Results.NotFound("Id does not match any user.");
     }
 
     user.Username = userChanges.Username;
@@ -84,7 +84,7 @@ app.MapPut("/user/update/{id}", async ([FromRoute] int id, [FromBody] User userC
 
     await context.SaveChangesAsync();
 
-    return Results.Ok("User information has been updated!");
+    return Results.Ok("User information has been updated.");
 });
 
 // Remove o usuário cujo id bata com o do parâmetro passado através da URL (caso o id seja válido)
@@ -93,13 +93,13 @@ app.MapDelete("/user/delete/{id}", async ([FromRoute] int id,  [FromServices] Ap
     var user = await context.Users.FindAsync(id);
     if (user is null)
     {
-        return Results.NotFound("404 - The ID does not match any user!");
+        return Results.NotFound("Id does not match any user.");
     }
 
     context.Users.Remove(user);
     await context.SaveChangesAsync();
 
-    return Results.Ok("User removed successfully!");
+    return Results.Ok("User removed successfully.");
 });
 
 //
@@ -109,7 +109,7 @@ app.MapDelete("/user/delete/{id}", async ([FromRoute] int id,  [FromServices] Ap
 // Cria uma tarefa com base no objeto do tipo task passado via parâmetro através do corpo da requisição
 app.MapPost("/tasks/create", async ([FromBody] CustomTasks.Models.Task task, [FromServices] AppDataContext context) => 
 {
-    context.Tasks.Add(task);
+    await context.Tasks.AddAsync(task);
     await context.SaveChangesAsync();
 
     return Results.Created("", task);
@@ -120,7 +120,7 @@ app.MapGet("/tasks/list/{userId}", ([FromRoute] int userId, [FromServices] AppDa
 {
     User? user = context.Users.Include(u => u.Tasks).FirstOrDefault(u => u.UserId == userId);
     if (user == null) {
-        return Results.NotFound("404 - The ID does not match any user!");
+        return Results.NotFound("Id does not match any user.");
     }
 
     var userTasks = user.Tasks;
@@ -136,7 +136,7 @@ app.MapPut("/tasks/update/{id}", async ([FromRoute] int id, CustomTasks.Models.T
 {
     var matchingTask = await context.Tasks.FindAsync(id);
     if (matchingTask is null){
-        return Results.NotFound("404 - The ID does not match any task!");
+        return Results.NotFound("Id does not match any task.");
     }
 
     // Atualizando informações da tarefa
@@ -147,7 +147,7 @@ app.MapPut("/tasks/update/{id}", async ([FromRoute] int id, CustomTasks.Models.T
     
     await context.SaveChangesAsync();
 
-    return Results.Ok("Task information has been updated!");
+    return Results.Ok("Task information has been updated.");
 });
 
 // Remove a tarefa com id correspondnete ao passado por parâmetro através da URL (caso o id de fato corresponda a alguma tarefa)
@@ -156,13 +156,13 @@ app.MapDelete("/tasks/delete/{id}", async ([FromRoute] int id,  [FromServices] A
     var matchingTask = await context.Tasks.FindAsync(id);
     if (matchingTask is null)
     {
-        return Results.NotFound("404 - The ID does not match any task!");
+        return Results.NotFound("Id does not match any task.");
     }
 
     context.Tasks.Remove(matchingTask);
     await context.SaveChangesAsync();
     
-    return Results.Ok("Task removed successfully!");
+    return Results.Ok("Task removed successfully.");
 });
 
 //
@@ -183,7 +183,7 @@ app.MapGet("/label/list/{userId}", ([FromRoute] int userId, [FromServices] AppDa
 {
     User? user = context.Users.Include(u => u.Labels).FirstOrDefault(u => u.UserId == userId);
     if (user == null) {
-        return Results.NotFound("404 - The ID does not match any user!");
+        return Results.NotFound("Id does not match any user.");
     }
 
     var userLabels = user.Labels;
@@ -200,13 +200,13 @@ app.MapDelete("/label/delete/{id}", async ([FromRoute] int id,  [FromServices] A
     var matchingLabel = await context.Labels.FindAsync(id);
     if (matchingLabel is null)
     {
-        return Results.NotFound("404 - ID does not match any label!");
+        return Results.NotFound("Id does not match any label.");
     }
 
     context.Labels.Remove(matchingLabel);
     await context.SaveChangesAsync();
     
-    return Results.Ok("Label removed successfully!");
+    return Results.Ok("Label removed successfully.");
 });
 
 // Aplicando a política de CORS que permite requisições do wbesite em REACT (AllowReactWebsite)

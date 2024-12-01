@@ -1,3 +1,6 @@
+import { Email, EmailOutlined, Lock, LockOutlined, Person, PersonOutline, SendOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Box, Button, InputAdornment, Paper, TextField } from "@mui/material";
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -5,59 +8,131 @@ function SignUp() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false); // Define se a senha vai ser mostrada ou não
+    const [hasError, setHasError] = useState(false); // Define se houve algum erro no preenchimento do formulário
+    const [errorMsg, setErrorMsg] = useState(""); // Armazena a mensagem retornada da API
 
     const navigate = useNavigate();
 
     function registerUser(e: any) {
         e.preventDefault();
 
-        if (username.length < 5 || username.length > 30) {
-            return window.alert("The username must have at least 5 characters and does not exceed 30.");
-        }
-
-        if (email.length > 254) {
-            return window.alert("The maximum length of an email address is 254 characters.");
-        }
-
-        if (password.length < 5 || username.length > 30) {
-            return window.alert("The password must have at least 5 characters and does not exceed 30.");
-        }
-
-        fetch("http://localhost:5182/user/create", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
+        axios.post("http://localhost:5182/user/create",
+            {
                 username: username,
                 email: email,
                 password: password
-            })
-        })
-        .then(response => {
-            if (!response.ok) {
-                window.alert("User already exists!");
-            } else {
-                console.log("User created successfully");
             }
-        });
+        )
+        .then(()=> navigate("/signin"))
+        .catch((error: AxiosError) => 
+            {
+                setHasError(true); 
+                setErrorMsg(error.response?.data as string);
+            }
+        );
     }
 
         return (
-            <form onSubmit={registerUser}>
-                <div>
-                    <input type="text" name="username" onChange={(e: any) => setUsername(e.target.value)} placeholder="Choose a username" required />
-                </div>
-                <div>
-                    <input type="email" name="email" onChange={(e: any) => setEmail(e.target.value)} placeholder="Enter an email address" required />
-                </div>
-                <div>
-                    <input type="password" name="password" onChange={(e: any) => setPassword(e.target.value)} placeholder="Set a password" required />
-                </div>
-                <div>
-                    <input type="submit" value="Sign Up" />
-                </div>
-            </form>
+            <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            >
+                <Paper sx={{padding: "15px"}}>
+                    <form onSubmit={registerUser}>
+                        <div style={{margin: "15px"}}>
+                            <TextField
+                            type="text"
+                            variant="standard"
+                            label="Username"
+                            autoFocus // Renderiza o componente focando nessa caixa
+                            fullWidth
+                            size="small"
+                            onChange={(e: any) => setUsername(e.target.value)}
+                            required
+                            error={hasError}
+                            helperText={hasError ? errorMsg : "Must have 5-30 characters length."}
+                            slotProps={{input:
+                                {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                           {username.length > 0 ? <Person /> : <PersonOutline />}
+                                        </InputAdornment>
+                                    )
+                                }
+                            }}
+                            />
+                        </div>
+                        <div style={{margin: "15px"}}>
+                            <TextField
+                            type="email"
+                            variant="standard"
+                            label="Email"
+                            fullWidth
+                            size="small"
+                            onChange={(e: any) => setEmail(e.target.value)}
+                            error={hasError}
+                            helperText={hasError ? errorMsg : ""}
+                            required
+                            slotProps={{input:
+                                {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            {email.length > 0 ? <Email /> : <EmailOutlined />}
+                                        </InputAdornment>
+                                    )
+                                }
+                            }}
+                            />
+                        </div>
+                        <div style={{margin: "15px"}}>
+                            <TextField
+                            type={showPassword ? "text" : "password"}
+                            variant="standard"
+                            label="Password"
+                            fullWidth
+                            size="small"
+                            onChange={(e: any) => setPassword(e.target.value)}
+                            required
+                            helperText={"Must have 5-30 characters length."}
+                            slotProps={{input:
+                                {
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            {password.length > 0 ? <Lock /> : <LockOutlined />}
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <span onClick={() => setShowPassword(!showPassword)} style={{cursor: "pointer"}}>
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </span>
+                                        </InputAdornment>
+                                    )
+                                }
+                            }}
+                            />
+                        </div>
+                        <div style={{margin: "15px"}}>
+                            <Button
+                            type="submit"
+                            variant="contained"
+                            size="small"
+                            fullWidth
+                            endIcon={<SendOutlined />}
+                            sx={{"&:hover": 
+                                {
+                                    backgroundColor: "lightskyblue"
+                                }
+                            }}
+                            >
+                                Sign Up
+                            </Button>
+                        </div>
+                    </form>
+                </Paper>
+            </Box>
         );
 }
 
