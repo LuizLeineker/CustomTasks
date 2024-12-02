@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Task } from "../../models/Task";
 import { Label } from "../../models/Label";
+import { useParams } from "react-router-dom";
 
 function CreateTask() {
   const [name, setName] = useState("");
@@ -9,11 +10,13 @@ function CreateTask() {
   const [availableLabels, setAvailableLabels] = useState<Label[]>([]);
   const [selectedLabel, setSelectedLabel] = useState<number | undefined>(undefined);
 
+  const { username } = useParams<string>();
+
   useEffect(() => {
-    fetch("http://localhost:5182/label/list")
+    fetch(`http://localhost:5182/label/list/${username}`)
       .then((response) => response.json())
       .then((labels) => setAvailableLabels(labels))
-  }, []);
+  });
 
   function createTask(e: any) {
     e.preventDefault();
@@ -84,8 +87,11 @@ function CreateTask() {
           <select
             onChange={(e: any) => setSelectedLabel(Number(e.target.value))}value={selectedLabel}required
           >
-            <option value={undefined} disabled>Selecione um rótulo</option>{availableLabels.map((label) => (
-              <option key={label.labelId} value={label.labelId}>{label.labelName}</option>
+            <option value={undefined} disabled>Selecione um rótulo</option>
+            {availableLabels.map((label) => (
+              <option key={label.labelId} value={label.labelId}>
+                  {label.labelName}
+                </option>
             ))}
           </select>
         </div>

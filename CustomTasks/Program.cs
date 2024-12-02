@@ -206,6 +206,8 @@ app.MapGet("/label/list/{username}", ([FromRoute] string username, [FromServices
         return Results.NotFound("Username does not match any user.");
     }
 
+    user.Labels.AddRange(context.Labels.Where(l => l.UserId == null));
+
     return Results.Ok(user.Labels.ToList());
 });
 

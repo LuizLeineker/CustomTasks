@@ -21,7 +21,7 @@ function App() {
           <Route path="/label" element={<Category/>} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/tasks/create" element={<CreateTask />} />
+          <Route path="/tasks/create/:username" element={<CreateTask />} />
           <Route path="/tasks/list/:username" element={<SearchTask />} />
           <Route path="/tasks/update/:taskId" element={<UpdateTask />} />
           <Route path="/label/create" element={<CreateLabel />} />

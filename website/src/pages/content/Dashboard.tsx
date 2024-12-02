@@ -56,7 +56,7 @@ function Dashboard() {
                 <Fab
                 color="primary"
                 aria-label="add"
-                onClick={() => navigate("/tasks/create")}
+                onClick={() => navigate(`/tasks/create/${username}`)}
                 >
                     <Add />
                 </Fab>
