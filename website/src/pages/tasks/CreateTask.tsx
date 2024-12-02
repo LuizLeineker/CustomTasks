@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { Task } from "../../models/Task";
 import { Label } from "../../models/Label";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 function CreateTask() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [userId, setUserId] = useState("");
-  const [availableLabels, setAvailableLabels] = useState<Label[]>([]);
-  const [selectedLabel, setSelectedLabel] = useState<number | undefined>(undefined);
+  const [label, setLabel] = useState<Label[]>([]);
+  const [labelId, setLabelId] = useState(0);
+  const { username } = useParams<{ username: string }>();
 
   useEffect(() => {
-    fetch("http://localhost:5182/label/list")
-      .then((response) => response.json())
-      .then((labels) => setAvailableLabels(labels))
-  }, []);
+    axios
+      .get<Label[]>(`http://localhost:5182/label/list/Barone`)
+      .then((resposta) => {
+        setLabel(resposta.data);
+      });
+  });
 
   function createTask(e: any) {
     e.preventDefault();
@@ -22,29 +27,22 @@ function CreateTask() {
       name: name,
       description: description,
       userId: Number(userId),
-      labelId: selectedLabel,
+      labelId: labelId,
     };
 
-    fetch("http://localhost:5182/tasks/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(task),
-    })
-      .then((resposta) => {
-        if (resposta.ok) {
-          alert("Tarefa criada com sucesso!");
-          setName("");
-          setDescription("");
-          setUserId("");
-          setSelectedLabel(undefined);
-        } else {
-          alert("Erro ao criar tarefa.");
-        }
-        return resposta.json();
+   
+    fetch("http://localhost:5182/tasks/create", 
+      {
+          method : "POST",
+          headers : {
+              "Content-Type" : "application/json"
+          },
+          body : JSON.stringify(task)
       })
-      .catch((err) => console.error("Erro:", err));
+      .then(resposta => {
+          console.log("Task Create");
+          return resposta.json();
+      })
   }
 
   return (
@@ -81,13 +79,18 @@ function CreateTask() {
           />
         </div>
         <div>
-          <select
-            onChange={(e: any) => setSelectedLabel(Number(e.target.value))}value={selectedLabel}required
-          >
-            <option value={undefined} disabled>Selecione um rótulo</option>{availableLabels.map((label) => (
-              <option key={label.labelId} value={label.labelId}>{label.labelName}</option>
-            ))}
-          </select>
+          <label htmlFor="prioridade">Rotúlos Criados</label>
+            <select
+                onChange={(e: any) => setLabelId(e.target.value)}>
+                    
+                    {label.map((labels) => (
+                        <option
+                          value={labels.labelId}
+                          key={labels.labelId}>
+                          {labels.labelName}
+                        </option>
+                      ))}
+            </select>
         </div>
         <div>
           <input type="submit" value="CRIAR TAREFA" />

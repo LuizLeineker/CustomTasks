@@ -152,10 +152,10 @@ app.MapPut("/tasks/update/{id}", async ([FromRoute] int id, CustomTasks.Models.T
 });
 
 // Update no status da tarefa com base no id passado via parâmetro através da URL
-app.MapPatch("/tasks/status/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) =>
+app.MapPut("/tasks/status/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) =>
 {
     var matchingTask = await context.Tasks.FindAsync(id);
-    if (matchingTask is null){
+    if (matchingTask == null){
         return Results.NotFound("Id does not match any task.");
     }
 
@@ -167,11 +167,11 @@ app.MapPatch("/tasks/status/{id}", async ([FromRoute] int id,  [FromServices] Ap
 });
 
 
-// Remove a tarefa com id correspondnete ao passado por parâmetro através da URL (caso o id de fato corresponda a alguma tarefa)
+// Remove a tarefa com id correspondente ao passado por parâmetro através da URL (caso o id de fato corresponda a alguma tarefa)
 app.MapDelete("/tasks/delete/{id}", async ([FromRoute] int id,  [FromServices] AppDataContext context) => 
 {
     var matchingTask = await context.Tasks.FindAsync(id);
-    if (matchingTask is null)
+    if (matchingTask == null)
     {
         return Results.NotFound("Id does not match any task.");
     }

@@ -25,7 +25,7 @@ function SignUp() {
             }
         )
         .then(()=> navigate("/signin"))
-        .catch((error: AxiosError) => 
+        .catch(error => 
             {
                 setHasError(true); 
                 setErrorMsg(error.response?.data as string);

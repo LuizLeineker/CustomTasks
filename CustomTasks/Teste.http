@@ -76,8 +76,8 @@ POST {{baseUrl}}/label/create
 Content-Type: application/json
 
 {
-    "LabelName": "ag",
-    "UserId": 2
+    "LabelName": "ddsssdd",
+    "UserId": 1
 }
 
 ###

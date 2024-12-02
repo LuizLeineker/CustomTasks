@@ -13,13 +13,6 @@ function Home() {
                     <Link to="/signin">Signin</Link>
                 </li>
             </ul>  
-
-            <ul>  
-                <li>
-                    <Link to="/dashboard">COLOCAR DIRETO NO LOGIN PRA DIRECIONAR PRA DASH</Link>
-                </li>
-            </ul>
-
         </div>
     );
 }
