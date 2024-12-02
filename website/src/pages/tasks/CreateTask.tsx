@@ -79,7 +79,7 @@ function CreateTask() {
           />
         </div>
         <div>
-          <label htmlFor="prioridade">Rotúlos Criados</label>
+          <label htmlFor="prioridade"> -  -  -  L  A  B  E  L  -  -  -  -   -  - </label>
             <select
                 onChange={(e: any) => setLabelId(e.target.value)}>
                     
@@ -93,7 +93,7 @@ function CreateTask() {
             </select>
         </div>
         <div>
-          <input type="submit" value="CRIAR TAREFA" />
+          <input style={{width: '178px'}} type="submit" value="CRIAR TAREFA" />
         </div>
       </form>
     </div>
