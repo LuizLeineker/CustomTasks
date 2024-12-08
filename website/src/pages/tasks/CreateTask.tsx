@@ -1,48 +1,43 @@
 import { useEffect, useState } from "react";
 import { Task } from "../../models/Task";
 import { Label } from "../../models/Label";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { Select, MenuItem, Checkbox, ListItemText, Chip, Box, InputLabel, FormControl } from "@mui/material";
 
 function CreateTask() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [userId, setUserId] = useState("");
-  const [label, setLabel] = useState<Label[]>([]);
-  const [labelId, setLabelId] = useState(0);
+  const [labels, setLabels] = useState<Label[]>([]);
+  const [labelsId, setLabelsIds] = useState<number[]>([]);
+
   const { username } = useParams<{ username: string }>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get<Label[]>(`http://localhost:5182/label/list/Barone`)
-      .then((resposta) => {
-        setLabel(resposta.data);
-      });
-  });
+      .get<Label[]>(`http://localhost:5182/label/list/${username}`)
+      .then(({ data }) => setLabels(data));
+  }, [username]);
 
-  function createTask(e: any) {
+  function createTask(e: React.FormEvent) {
     e.preventDefault();
 
     const task: Task = {
       name: name,
       description: description,
       userId: Number(userId),
-      labelId: labelId,
+      labels: labels.filter((l) => labelsId.includes(l.labelId!)),
     };
 
-   
-    fetch("http://localhost:5182/tasks/create", 
-      {
-          method : "POST",
-          headers : {
-              "Content-Type" : "application/json"
-          },
-          body : JSON.stringify(task)
-      })
-      .then(resposta => {
-          console.log("Task Create");
-          return resposta.json();
-      })
+    axios
+      .post("http://localhost:5182/tasks/create", task)
+      .then(() => {
+        console.log("Task created successfully.");
+        navigate(`/dashboard/${username}`);
+      });
   }
 
   return (
@@ -53,7 +48,7 @@ function CreateTask() {
           <input
             type="text"
             name="name"
-            onChange={(e: any) => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Nome da tarefa"
             value={name}
             required
@@ -63,7 +58,7 @@ function CreateTask() {
           <input
             type="text"
             name="description"
-            onChange={(e: any) => setDescription(e.target.value)}
+            onChange={(e) => setDescription(e.target.value)}
             placeholder="Descrição da tarefa"
             value={description}
           />
@@ -72,33 +67,46 @@ function CreateTask() {
           <input
             type="number"
             name="userId"
-            onChange={(e: any) => setUserId(e.target.value)}
+            onChange={(e) => setUserId(e.target.value)}
             placeholder="ID do usuário"
             value={userId}
             required
           />
         </div>
         <div>
-          <label htmlFor="prioridade"> -  -  -  L  A  B  E  L  -  -  -  -   -  - </label>
-            <select
-                onChange={(e: any) => setLabelId(e.target.value)}>
-                    
-                    {label.map((labels) => (
-                        <option
-                          value={labels.labelId}
-                          key={labels.labelId}>
-                          {labels.labelName}
-                        </option>
-                      ))}
-            </select>
+          <FormControl sx={{ m: 1, width: 300 }} fullWidth>
+            <InputLabel id="ui">Selecione as etiquetas</InputLabel>
+            <Select
+              multiple
+              labelId="ui"
+              value={labelsId} // Configura o valor selecionado
+              onChange={e => setLabelsIds(e.target.value as number[])}
+              renderValue={(selected) =>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {
+                  labels.filter(({ labelId }) => selected.includes(labelId!))
+                    .map(({ labelId, labelName}) => (
+                  <Chip key={labelId} label={labelName} />
+                    )
+                )}
+              </Box>
+              }
+            >
+                {labels.map(({ labelId, labelName }) => (
+                  <MenuItem key={labelId} value={labelId}>
+                    <Checkbox checked={labelsId.includes(labelId!)} />
+                    <ListItemText primary={labelName} />
+                  </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </div>
         <div>
-          <input style={{width: '178px'}} type="submit" value="CRIAR TAREFA" />
+          <input style={{ width: "178px" }} type="submit" value="CRIAR TAREFA" />
         </div>
       </form>
     </div>
   );
 }
-
 
 export default CreateTask;

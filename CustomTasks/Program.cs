@@ -110,6 +110,8 @@ app.MapDelete("/user/delete/{id}", async ([FromRoute] int id,  [FromServices] Ap
 // Cria uma tarefa com base no objeto do tipo task passado via parâmetro através do corpo da requisição
 app.MapPost("/tasks/create", async ([FromBody] CustomTasks.Models.Task task, [FromServices] AppDataContext context) => 
 {
+    context.Labels.AttachRange(task.Labels);
+
     await context.Tasks.AddAsync(task);
     await context.SaveChangesAsync();
 
@@ -205,6 +207,8 @@ app.MapGet("/label/list/{username}", ([FromRoute] string username, [FromServices
     if (user is null) {
         return Results.NotFound("Username does not match any user.");
     }
+
+    user.Labels.AddRange(context.Labels.Where(l => l.IsDefault));
 
     return Results.Ok(user.Labels.ToList());
 });

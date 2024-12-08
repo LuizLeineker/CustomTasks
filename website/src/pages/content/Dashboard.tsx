@@ -64,25 +64,22 @@ function Dashboard() {
                                             <TableCell>{createdAt!.replace("T", " ")}</TableCell>
                                             <TableCell>{labels?.map(l => l.labelName).join(", ")}</TableCell>
                                             <TableCell> 
-                                                <button onClick={() => {
-                                                    status(taskId!);    }}>
-                                                Complete
+                                                <button onClick={() => status(taskId!)}>
+                                                    Complete
                                                 </button>
                                             </TableCell> 
                                             <TableCell> 
-                                                <button onClick={() => {
-                                                    update(taskId!);    }}>
-                                                Update
+                                                <button onClick={() => update(taskId!)}>
+                                                    Update
                                                 </button>
                                             </TableCell>  
                                             <TableCell> 
-                                                <button onClick={() => {
-                                                    remove(taskId!);    }}>
-                                                Delete
+                                                <button onClick={() => remove(taskId!)}>
+                                                    Delete
                                                 </button>
                                             </TableCell>  
                                             <TableCell> 
-                                                <button onClick={() =>  navigate(`/label/list/${taskId}`) }>
+                                                <button onClick={() => navigate(`/label/list/${taskId}`)}>
                                                     LABELS
                                                 </button>
                                             </TableCell>    
@@ -101,7 +98,7 @@ function Dashboard() {
                 <Fab
                 color="primary"
                 aria-label="add"
-                onClick={() => navigate("/tasks/create")}
+                onClick={() => navigate(`/tasks/create/${username}`)}
                 sx={{ marginRight: 3 }} 
                 >
                     <Add />

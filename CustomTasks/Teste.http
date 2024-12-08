@@ -40,7 +40,7 @@ Content-Type: application/json
 ### Remove um usuário
 DELETE {{baseUrl}}/user/delete/1
 
-### Cria uma tarefa
+### Cria uma tarefa (2)
 POST {{baseUrl}}/tasks/create
 Content-Type: application/json
 
@@ -50,8 +50,23 @@ Content-Type: application/json
     "userid": 1
 }
 
+### Cria uma tarefa com rótulo
+POST {{baseUrl}}/tasks/create
+Content-Type: application/json
+
+{
+    "name": "Estudar para a prova de Python",
+    "userid": 1,
+    "labels": [
+        {
+            "labelId": 1,
+            "labelName": "urgent"
+        }
+    ]
+}
+
 ### Lista (caso houverem) todas as tarefas relacionadas a um usuário específico
-GET {{baseUrl}}/tasks/list/Barone
+GET {{baseUrl}}/tasks/list/Brian Santos
 
 
 ### Atualiza as informações de uma tarefa em particular
@@ -92,4 +107,4 @@ POST {{baseUrl}}/label/create
 DELETE {{baseUrl}}/label/delete/1
 
 ### Retorna todos os rótulos relacionados a um usuário em específico
-GET {{baseUrl}}/label/list/Barone
+GET {{baseUrl}}/label/list/Brian%20Santos
